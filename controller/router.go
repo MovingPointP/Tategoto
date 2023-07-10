@@ -16,7 +16,7 @@ func GetRouter(db *gorm.DB) *gin.Engine {
 	service := service.New(repository)
 
 	//routing
-	r.GET("/users/:id", getUserById(service))
+	r.GET("/users/:name", getUsersByName(service))
 	r.GET("/signin", createUser(service))
 
 	return r

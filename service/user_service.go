@@ -7,8 +7,9 @@ import (
 )
 
 type UserService interface {
-	CreateUser(ctx context.Context, user *model.User)
-	GetUserById(ctx context.Context, id string)
+	CreateUser(ctx context.Context, user *model.User) error
+	GetUserById(ctx context.Context, id string) (*model.User, error)
+	GetUsersByName(ctx context.Context, name string) ([]*model.User, error)
 }
 
 type userService struct {
@@ -19,10 +20,14 @@ func NewUserService(ur *repository.UserRepository) UserService {
 	return &userService{ur: *ur}
 }
 
-func (us *userService) CreateUser(ctx context.Context, user *model.User) {
-	us.ur.CreateUser(ctx, user)
+func (us *userService) CreateUser(ctx context.Context, user *model.User) error {
+	return us.ur.CreateUser(ctx, user)
 }
 
-func (us *userService) GetUserById(ctx context.Context, id string) {
-	us.ur.GetUserById(ctx, id)
+func (us *userService) GetUserById(ctx context.Context, id string) (*model.User, error) {
+	return us.ur.GetUserById(ctx, id)
+}
+
+func (us *userService) GetUsersByName(ctx context.Context, name string) ([]*model.User, error) {
+	return us.ur.GetUsersByName(ctx, name)
 }

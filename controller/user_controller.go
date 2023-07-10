@@ -1,21 +1,32 @@
 package controller
 
 import (
+	"net/http"
 	"tategoto/model"
 	"tategoto/service"
 
 	"github.com/gin-gonic/gin"
 )
 
-func getUserById(serv service.Services) func(ctx *gin.Context) {
+func getUsersByName(serv service.Services) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
-		id := ctx.Param("id")
-		serv.GetUserById(ctx, id)
+		name := ctx.Param("name")
+		users, err := serv.GetUsersByName(ctx, name)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, err)
+		} else {
+			ctx.JSON(http.StatusOK, users)
+		}
 	}
 }
 
 func createUser(serv service.Services) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
-		serv.CreateUser(ctx, &model.SampleUser)
+		err := serv.CreateUser(ctx, &model.SampleUser)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, err)
+		} else {
+			ctx.JSON(http.StatusOK, "")
+		}
 	}
 }
