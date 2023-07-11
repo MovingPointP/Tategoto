@@ -8,8 +8,11 @@ import (
 )
 
 type UserRepository interface {
+	//Insert
 	CreateUser(ctx context.Context, user *model.User) error
+	//Select
 	GetUserById(ctx context.Context, id string) (*model.User, error)
+	GetUserByMail(ctx context.Context, mail string) (*model.User, error)
 	GetUsersByName(ctx context.Context, name string) ([]*model.User, error)
 }
 
@@ -29,6 +32,12 @@ func (ur *userRepository) CreateUser(ctx context.Context, user *model.User) erro
 func (ur *userRepository) GetUserById(ctx context.Context, id string) (*model.User, error) {
 	var user *model.User
 	result := ur.db.Find(&user, "id = ?", id)
+	return user, result.Error
+}
+
+func (ur *userRepository) GetUserByMail(ctx context.Context, mail string) (*model.User, error) {
+	var user *model.User
+	result := ur.db.Find(&user, "mail = ?", mail)
 	return user, result.Error
 }
 

@@ -3,13 +3,10 @@ package model
 import "gorm.io/gorm"
 
 // TODO: 文字列制限
+// TODO: index
 type User struct {
 	gorm.Model
-	NickName string `json:"nick_name"`
-	Mail     string `json:"mail"`
-	Password string `json:"password"`
-}
-
-var SampleUser = User{
-	NickName: "John", Mail: "john01@fef.com", Password: "3576dhuw",
+	Mail        string `json:"mail"`
+	Password    string `json:"password"`
+	DisplayName string `json:"display_name"`
 }

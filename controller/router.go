@@ -20,7 +20,7 @@ func GetRouter(db *gorm.DB) *gin.Engine {
 
 	//routing
 	r.GET("/users/:name", getUsersByName)
-	r.GET("/signup", signup)
+	r.POST("/signup", signup)
 
 	return r
 }
