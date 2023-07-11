@@ -8,19 +8,19 @@ import (
 	"gorm.io/gorm"
 )
 
-var repositoryInstance repository.Repositorys
 var serviceInstance service.Services
 
 func GetRouter(db *gorm.DB) *gin.Engine {
-	//create engine
+	//engine作成
 	r := gin.Default()
 
-	repositoryInstance = repository.New(*db)
+	//instance作成
+	repositoryInstance := repository.New(*db)
 	serviceInstance = service.New(repositoryInstance)
 
 	//routing
 	r.GET("/users/:name", getUsersByName)
-	r.GET("/signup", createUser)
+	r.GET("/signup", signup)
 
 	return r
 }

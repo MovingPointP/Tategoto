@@ -14,10 +14,11 @@ func main() {
 	//DBに接続
 	db := connection.GetConnection()
 	defer connection.CloseConnection(db)
-	//マイグレーション
+	//migration
 	db.AutoMigrate(&model.User{})
 
 	//GinのEngine取得
 	router := controller.GetRouter(db)
+	//server起動
 	router.Run(config.Config.PORT)
 }

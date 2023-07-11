@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// open mysql
+// open
 func GetConnection() *gorm.DB {
 	dsn := config.Config.DSN
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
