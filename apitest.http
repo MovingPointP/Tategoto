@@ -10,6 +10,16 @@ POST http://localhost:8080/signup
 Content-Type: application/json
 
 {
-  "mail": "hogehoge@mail.com",
+  "mail": "hoge@mail.com",
+  "password": "hogefuga"
+}
+
+###
+
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+  "mail": "hoge@mail.com",
   "password": "hogefuga"
 }
