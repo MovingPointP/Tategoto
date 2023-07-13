@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 	"errors"
+	"tategoto/authentication"
 	"tategoto/config/msg"
-	"tategoto/crypto"
 	"tategoto/model"
 	"tategoto/repository"
 )
@@ -34,7 +34,7 @@ func (us *userService) SignUp(ctx context.Context, user *model.User) error {
 		return errors.New(msg.DuplicateMailErr)
 	}
 	//パスワード暗号化
-	pw, err := crypto.EncryptPassword(user.Password)
+	pw, err := authentication.EncryptPassword(user.Password)
 	if err != nil {
 		//暗号化エラー
 		return errors.New(msg.EncryptionErr)
@@ -43,6 +43,7 @@ func (us *userService) SignUp(ctx context.Context, user *model.User) error {
 	return us.ur.CreateUser(ctx, user)
 }
 
+// TODO: unique_nameでのLogin
 func (us *userService) Login(ctx context.Context, user *model.User) error {
 	receivedUser, err := us.ur.GetUserByMail(ctx, user.Mail)
 	if err != nil {
@@ -51,7 +52,7 @@ func (us *userService) Login(ctx context.Context, user *model.User) error {
 		//メール非存在エラー
 		return errors.New(msg.IncorrectMailOrPasswordErr)
 	}
-	err = crypto.CompareHashAndPassword(receivedUser.Password, user.Password)
+	err = authentication.CompareHashAndPassword(receivedUser.Password, user.Password)
 	if err != nil {
 		//パスワード不一致エラー
 		return errors.New(msg.IncorrectMailOrPasswordErr)
