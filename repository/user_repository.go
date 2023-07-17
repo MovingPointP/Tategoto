@@ -44,8 +44,8 @@ func (ur *userRepository) GetUserByMail(ctx context.Context, mail string) (*mode
 func (ur *userRepository) GetUsersByName(ctx context.Context, name string) ([]*model.User, error) {
 	var users []*model.User
 	result := ur.db.
-		Select("id", "nick_name", "mail").
-		Where("nick_name = ?", name).
+		Select("id", "display_name", "mail").
+		Where("display_name = ?", name).
 		Find(&users)
 	return users, result.Error
 }

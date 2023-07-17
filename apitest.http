@@ -1,4 +1,4 @@
-GET http://localhost:8080/users/john
+GET http://localhost:8080/api/users/john
 
 ###
 

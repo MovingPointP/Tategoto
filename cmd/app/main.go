@@ -2,7 +2,7 @@ package main
 
 import (
 	"tategoto/config"
-	"tategoto/connection"
+	"tategoto/connect"
 	"tategoto/controller"
 	"tategoto/model"
 )
@@ -12,8 +12,8 @@ func main() {
 	config.InitConfig()
 
 	//DBに接続
-	db := connection.GetConnection()
-	defer connection.CloseConnection(db)
+	db := connect.GetConnection()
+	defer connect.CloseConnection(db)
 	//migration
 	db.AutoMigrate(&model.User{})
 

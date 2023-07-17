@@ -1,4 +1,4 @@
-package connection
+package connect
 
 import (
 	"tategoto/config"
