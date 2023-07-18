@@ -10,34 +10,26 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Middleware
-func AuthRequired() gin.HandlerFunc {
-	return func(c *gin.Context) {
+func AuthMiddleware() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
 
-		token, err := c.Cookie("token")
+		token, err := ctx.Cookie("token") //cookieからtokenの取得
 
 		//tokenが存在しない場合
 		if err != nil {
-			//loginにリダイレクト
-			//c.Redirect(http.StatusMovedPermanently, "/login")
-			c.JSON(http.StatusBadRequest, err.Error())
-			c.Abort()
+			ctx.Set("pastURI", ctx.Request.RequestURI)          //元のURIを保持
+			ctx.Redirect(http.StatusMovedPermanently, "/login") //loginにリダイレクト
+			ctx.Abort()
 		}
 
-		//jwtの検証
-		userId, err := auth.VerifyUserJWT(token)
-
-		//user取得
-		user, err := serviceInstance.GetUserById(c, userId)
+		user, err := serviceInstance.RestoreUser(ctx, token)
 		if err != nil {
-			//loginにリダイレクト
-			//c.Redirect(http.StatusMovedPermanently, "/login")
-			c.JSON(http.StatusBadRequest, err.Error())
-			c.Abort()
+			ctx.Set("pastURI", ctx.Request.RequestURI)          //元のURIを保持
+			ctx.Redirect(http.StatusMovedPermanently, "/login") //loginにリダイレクト
+			ctx.Abort()
 		} else {
-			//contextにセット
-			c.Set("AuthorizedUser", user)
-			c.Next() //これより前は事前処理、後は事後処理
+			ctx.Set("authorizedUser", user) //userを保持
+			ctx.Next()                      //この行より前は事前処理、後は事後処理
 		}
 	}
 }
@@ -47,15 +39,17 @@ func signup(ctx *gin.Context) {
 	//userにバインド
 	if err := ctx.ShouldBindJSON(&user); err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
+		return
 	}
 
-	err := serviceInstance.SignUp(ctx, &user)
+	receivedUser, err := serviceInstance.SignUp(ctx, &user)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, err.Error())
-	} else {
-		//TODO: 情報の一部のみ持つuserをreturn
-		ctx.JSON(http.StatusOK, &user)
+		return
 	}
+
+	ctx.JSON(http.StatusOK, &receivedUser)
+
 }
 
 func login(ctx *gin.Context) {
@@ -65,16 +59,27 @@ func login(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	err := serviceInstance.Login(ctx, &user)
+	receivedUser, err := serviceInstance.Login(ctx, &user)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, err.Error())
-	} else {
-		//TODO: 情報の一部のみ持つuserをreturn
-		token, err := auth.CreateUserJWT(strconv.Itoa(int(user.ID)))
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, err.Error())
-		}
-		ctx.SetCookie("token", token, config.Config.ACCESS_TOKEN_HOUR*3600, "/", "localhost", false, true)
-		ctx.JSON(http.StatusOK, &user)
+		return
 	}
+
+	//token作成
+	token, err := auth.CreateUserJWT(strconv.Itoa(int(receivedUser.ID)))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	ctx.SetCookie("token", token, config.Config.ACCESS_TOKEN_HOUR*3600, "/", "localhost", false, true) //cookieにセット
+
+	//元のURIを取得
+	pastURI, ok := ctx.Get("pastURI")
+	if ok {
+		ctx.JSON(http.StatusOK, gin.H{"user": &user, "redirect": pastURI.(string)})
+	} else {
+		ctx.JSON(http.StatusOK, gin.H{"user": &user, "redirect": ""})
+	}
+
 }

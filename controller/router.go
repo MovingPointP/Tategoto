@@ -22,8 +22,9 @@ func GetRouter(db *gorm.DB) *gin.Engine {
 	//routing
 	r.POST("/signup", signup)
 	r.POST("/login", login)
+
 	api := r.Group("/api")
-	api.Use(AuthRequired()) //事前・事後処理
+	api.Use(AuthMiddleware()) //事前・事後処理
 	{
 		api.GET("/users/:name", getUsersByName)
 	}
