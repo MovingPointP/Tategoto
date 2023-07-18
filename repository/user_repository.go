@@ -32,12 +32,14 @@ func (ur *userRepository) CreateUser(ctx context.Context, user *model.User) erro
 func (ur *userRepository) GetUserById(ctx context.Context, id string) (*model.User, error) {
 	var user *model.User
 	result := ur.db.Find(&user, "id = ?", id)
+	user.Password = ""
 	return user, result.Error
 }
 
 func (ur *userRepository) GetUserByMail(ctx context.Context, mail string) (*model.User, error) {
 	var user *model.User
 	result := ur.db.Find(&user, "mail = ?", mail)
+	user.Password = ""
 	return user, result.Error
 }
 

@@ -77,9 +77,9 @@ func login(ctx *gin.Context) {
 	//元のURIを取得
 	pastURI, ok := ctx.Get("pastURI")
 	if ok {
-		ctx.JSON(http.StatusOK, gin.H{"user": &user, "redirect": pastURI.(string)})
+		ctx.JSON(http.StatusOK, gin.H{"user": &receivedUser, "redirect": pastURI.(string)})
 	} else {
-		ctx.JSON(http.StatusOK, gin.H{"user": &user, "redirect": ""})
+		ctx.JSON(http.StatusOK, gin.H{"user": &receivedUser, "redirect": ""})
 	}
 
 }
