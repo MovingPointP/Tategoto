@@ -58,7 +58,7 @@ func (us *userService) SignUp(ctx *gin.Context, user *model.User) (*model.User, 
 // TODO: unique_nameでのLogin
 func (us *userService) Login(ctx *gin.Context, user *model.User) (*model.User, error) {
 	//ユーザー取得
-	receivedUser, err := us.ur.GetUserByMail(ctx, user.Mail)
+	receivedUser, err := us.ur.GetUserPasswordByMail(ctx, user.Mail)
 	if err != nil {
 		return nil, err
 	} else if receivedUser.Mail == "" {
