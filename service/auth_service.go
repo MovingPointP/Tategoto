@@ -72,6 +72,6 @@ func (us *userService) Login(ctx *gin.Context, user *model.User) (*model.User, e
 		//パスワード不一致エラー
 		return nil, errors.New(msg.IncorrectMailOrPasswordErr)
 	}
-
+	receivedUser.Password = ""
 	return receivedUser, nil
 }
