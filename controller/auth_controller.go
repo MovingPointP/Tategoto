@@ -3,9 +3,10 @@ package controller
 import (
 	"net/http"
 	"strconv"
-	"tategoto/auth"
 	"tategoto/config"
 	"tategoto/model"
+	"tategoto/pkg/auth"
+	"tategoto/pkg/filter"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,14 +18,13 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		//tokenが存在しない場合
 		if err != nil {
-			ctx.Set("pastURI", ctx.Request.RequestURI)          //元のURIを保持
+			//TODO: リダイレクトする前のurlにログイン後に遷移したい
 			ctx.Redirect(http.StatusMovedPermanently, "/login") //loginにリダイレクト
 			ctx.Abort()
 		}
 
 		user, err := serviceInstance.RestoreUser(ctx, token)
 		if err != nil {
-			ctx.Set("pastURI", ctx.Request.RequestURI)          //元のURIを保持
 			ctx.Redirect(http.StatusMovedPermanently, "/login") //loginにリダイレクト
 			ctx.Abort()
 		} else {
@@ -42,13 +42,13 @@ func signup(ctx *gin.Context) {
 		return
 	}
 
-	receivedUser, err := serviceInstance.SignUp(ctx, &user)
+	spUser, err := serviceInstance.SignUp(ctx, &user)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, &receivedUser)
+	ctx.JSON(http.StatusOK, gin.H{"user": filter.PersonalUser(spUser)})
 
 }
 
@@ -59,14 +59,14 @@ func login(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	receivedUser, err := serviceInstance.Login(ctx, &user)
+	spUser, err := serviceInstance.Login(ctx, &user)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	//token作成
-	token, err := auth.CreateUserJWT(strconv.Itoa(int(receivedUser.ID)))
+	token, err := auth.CreateUserJWT(strconv.Itoa(int(spUser.ID)))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, err.Error())
 		return
@@ -74,12 +74,6 @@ func login(ctx *gin.Context) {
 
 	ctx.SetCookie("token", token, config.Config.ACCESS_TOKEN_HOUR*3600, "/", "localhost", false, true) //cookieにセット
 
-	//元のURIを取得
-	pastURI, ok := ctx.Get("pastURI")
-	if ok {
-		ctx.JSON(http.StatusOK, gin.H{"user": &receivedUser, "redirect": pastURI.(string)})
-	} else {
-		ctx.JSON(http.StatusOK, gin.H{"user": &receivedUser, "redirect": ""})
-	}
+	ctx.JSON(http.StatusOK, gin.H{"user": filter.PersonalUser(spUser)})
 
 }

@@ -2,9 +2,9 @@ package service
 
 import (
 	"errors"
-	"tategoto/auth"
 	"tategoto/config/msg"
 	"tategoto/model"
+	"tategoto/pkg/auth"
 
 	"github.com/gin-gonic/gin"
 )
@@ -25,10 +25,10 @@ func (us *userService) RestoreUser(ctx *gin.Context, token string) (*model.User,
 
 func (us *userService) SignUp(ctx *gin.Context, user *model.User) (*model.User, error) {
 	//メールアドレス重複チェック
-	receivedUser, err := us.ur.GetUserByMail(ctx, user.Mail)
+	spUser, err := us.ur.GetUserByMail(ctx, user.Mail)
 	if err != nil {
 		return nil, err
-	} else if receivedUser.Mail != "" {
+	} else if spUser.Mail != "" {
 		//重複エラー
 		return nil, errors.New(msg.DuplicateMailErr)
 	}
@@ -47,31 +47,30 @@ func (us *userService) SignUp(ctx *gin.Context, user *model.User) (*model.User, 
 	}
 
 	//ユーザー取得
-	receivedUser, err = us.ur.GetUserByMail(ctx, user.Mail)
+	spUser, err = us.ur.GetUserByMail(ctx, user.Mail)
 	if err != nil {
 		return nil, err
 	}
 
-	return receivedUser, nil
+	return spUser, nil
 }
 
 // TODO: unique_nameでのLogin
 func (us *userService) Login(ctx *gin.Context, user *model.User) (*model.User, error) {
 	//ユーザー取得
-	receivedUser, err := us.ur.GetUserPasswordByMail(ctx, user.Mail)
+	spUser, err := us.ur.GetUserByMail(ctx, user.Mail)
 	if err != nil {
 		return nil, err
-	} else if receivedUser.Mail == "" {
+	} else if spUser.Mail == "" {
 		//メール非存在エラー
 		return nil, errors.New(msg.IncorrectMailOrPasswordErr)
 	}
 
 	//パスワード比較
-	err = auth.CompareHashAndPassword(receivedUser.Password, user.Password)
+	err = auth.CompareHashAndPassword(spUser.Password, user.Password)
 	if err != nil {
 		//パスワード不一致エラー
 		return nil, errors.New(msg.IncorrectMailOrPasswordErr)
 	}
-	receivedUser.Password = ""
-	return receivedUser, nil
+	return spUser, nil
 }

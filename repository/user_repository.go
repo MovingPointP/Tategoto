@@ -13,7 +13,6 @@ type UserRepository interface {
 	//Select
 	GetUserById(ctx context.Context, id string) (*model.User, error)
 	GetUserByMail(ctx context.Context, mail string) (*model.User, error)
-	GetUserPasswordByMail(ctx context.Context, mail string) (*model.User, error)
 	GetUsersByName(ctx context.Context, name string) ([]*model.User, error)
 }
 
@@ -32,21 +31,19 @@ func (ur *userRepository) CreateUser(ctx context.Context, user *model.User) erro
 
 func (ur *userRepository) GetUserById(ctx context.Context, id string) (*model.User, error) {
 	var user *model.User
-	result := ur.db.Find(&user, "id = ?", id)
-	user.Password = ""
+	result := ur.db.
+		Where("id = ?", id).
+		Where("deleted_at is null").
+		Find(&user)
 	return user, result.Error
 }
 
 func (ur *userRepository) GetUserByMail(ctx context.Context, mail string) (*model.User, error) {
 	var user *model.User
-	result := ur.db.Find(&user, "mail = ?", mail)
-	user.Password = ""
-	return user, result.Error
-}
-
-func (ur *userRepository) GetUserPasswordByMail(ctx context.Context, mail string) (*model.User, error) {
-	var user *model.User
-	result := ur.db.Find(&user, "mail = ?", mail)
+	result := ur.db.
+		Where("mail = ?", mail).
+		Where("deleted_at is null").
+		Find(&user)
 	return user, result.Error
 }
 
@@ -55,6 +52,7 @@ func (ur *userRepository) GetUsersByName(ctx context.Context, name string) ([]*m
 	result := ur.db.
 		Select("id", "display_name", "mail").
 		Where("display_name = ?", name).
+		Where("deleted_at is null").
 		Find(&users)
 	return users, result.Error
 }
