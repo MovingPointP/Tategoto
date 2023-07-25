@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 	"tategoto/config"
+	"tategoto/config/msg"
 	"tategoto/model"
 	"tategoto/pkg/auth"
 	"tategoto/pkg/filter"
@@ -18,14 +19,14 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		//tokenが存在しない場合
 		if err != nil {
-			//TODO: リダイレクトする前のurlにログイン後に遷移したい
-			ctx.Redirect(http.StatusMovedPermanently, "/login") //loginにリダイレクト
+			ctx.JSON(http.StatusSeeOther, gin.H{"message": msg.ShouldLoginErr, "path": ctx.Request.URL.Path})
 			ctx.Abort()
+			return
 		}
 
 		user, err := serviceInstance.RestoreUser(ctx, token)
 		if err != nil {
-			ctx.Redirect(http.StatusMovedPermanently, "/login") //loginにリダイレクト
+			ctx.JSON(http.StatusSeeOther, gin.H{"message": msg.ShouldLoginErr, "path": ctx.Request.URL.Path})
 			ctx.Abort()
 		} else {
 			ctx.Set("authorizedUser", user) //userを保持
@@ -38,13 +39,13 @@ func signup(ctx *gin.Context) {
 	var user model.User
 	//userにバインド
 	if err := ctx.ShouldBindJSON(&user); err != nil {
-		ctx.JSON(http.StatusBadRequest, err.Error())
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
 	spUser, err := serviceInstance.SignUp(ctx, &user)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, err.Error())
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 	}
 
@@ -56,19 +57,19 @@ func login(ctx *gin.Context) {
 	var user model.User
 	//userにバインド
 	if err := ctx.ShouldBindJSON(&user); err != nil {
-		ctx.JSON(http.StatusBadRequest, err.Error())
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 	}
 
 	spUser, err := serviceInstance.Login(ctx, &user)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, err.Error())
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 	}
 
 	//token作成
 	token, err := auth.CreateUserJWT(strconv.Itoa(int(spUser.ID)))
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, err.Error())
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 	}
 
