@@ -8,7 +8,8 @@ import "gorm.io/gorm"
 // TODO: index キー制約
 type User struct {
 	gorm.Model
-	Mail       string `json:"mail" gorm:"unique;not null" validate:"email"`
-	Password   string `json:"password" gorm:"not null"`
-	UniqueName string `json:"unique_name"`
+	Mail     string `json:"mail" gorm:"unique;not null" validate:"email"`
+	Password string `json:"password" gorm:"not null"`
+	Name     string `json:"name"`
+}
 }

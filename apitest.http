@@ -1,4 +1,8 @@
-GET http://localhost:8080/api/users/john
+GET http://localhost:8080/api/users/1
+
+###
+
+GET http://localhost:8080/api/users?name=john
 
 ###
 
@@ -10,7 +14,8 @@ POST http://localhost:8080/signup
 Content-Type: application/json
 
 {
-  "mail": "hogefuga@mail.com",
+  "name": "john",
+  "mail": "hoge@mail.com",
   "password": "hogefuga"
 }
 

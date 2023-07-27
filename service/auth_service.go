@@ -1,15 +1,14 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"tategoto/config/msg"
 	"tategoto/model"
 	"tategoto/pkg/auth"
-
-	"github.com/gin-gonic/gin"
 )
 
-func (us *userService) RestoreUser(ctx *gin.Context, token string) (*model.User, error) {
+func (us *userService) RestoreUser(ctx context.Context, token string) (*model.User, error) {
 	//jwtの検証
 	userId, err := auth.VerifyUserJWT(token)
 	if err != nil {
@@ -23,7 +22,7 @@ func (us *userService) RestoreUser(ctx *gin.Context, token string) (*model.User,
 	return user, nil
 }
 
-func (us *userService) SignUp(ctx *gin.Context, user *model.User) (*model.User, error) {
+func (us *userService) SignUp(ctx context.Context, user *model.User) (*model.User, error) {
 	//メールアドレス重複チェック
 	spUser, err := us.ur.GetUserByMail(ctx, user.Mail)
 	if err != nil {
@@ -56,7 +55,7 @@ func (us *userService) SignUp(ctx *gin.Context, user *model.User) (*model.User, 
 }
 
 // TODO: unique_nameでのLogin
-func (us *userService) Login(ctx *gin.Context, user *model.User) (*model.User, error) {
+func (us *userService) Login(ctx context.Context, user *model.User) (*model.User, error) {
 	//ユーザー取得
 	spUser, err := us.ur.GetUserByMail(ctx, user.Mail)
 	if err != nil {

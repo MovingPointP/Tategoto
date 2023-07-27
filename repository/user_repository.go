@@ -13,7 +13,7 @@ type UserRepository interface {
 	//Select
 	GetUserById(ctx context.Context, id string) (*model.User, error)
 	GetUserByMail(ctx context.Context, mail string) (*model.User, error)
-	GetUsersByName(ctx context.Context, name string) ([]*model.User, error)
+	GetUsers(ctx context.Context, userOption *model.User) ([]*model.User, error)
 }
 
 type userRepository struct {
@@ -47,12 +47,14 @@ func (ur *userRepository) GetUserByMail(ctx context.Context, mail string) (*mode
 	return user, result.Error
 }
 
-func (ur *userRepository) GetUsersByName(ctx context.Context, name string) ([]*model.User, error) {
+func (ur *userRepository) GetUsers(ctx context.Context, userOption *model.User) ([]*model.User, error) {
 	var users []*model.User
-	result := ur.db.
-		Select("id", "display_name", "mail").
-		Where("display_name = ?", name).
-		Where("deleted_at is null").
-		Find(&users)
+	chain := ur.db.Where("deleted_at is null")
+
+	if userOption.Name != "" {
+		chain.Where("name = ?", userOption.Name)
+	}
+
+	result := chain.Find(&users)
 	return users, result.Error
 }

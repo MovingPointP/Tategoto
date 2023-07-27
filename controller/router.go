@@ -26,7 +26,8 @@ func GetRouter(db *gorm.DB) *gin.Engine {
 	api := r.Group("/api")
 	api.Use(AuthMiddleware()) //事前・事後処理
 	{
-		api.GET("/users/:name", getUsersByName)
+		api.GET("/users/:id", getUserById)
+		api.GET("/users", getUsers)
 	}
 
 	r.NoRoute(func(c *gin.Context) {

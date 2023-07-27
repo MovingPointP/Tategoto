@@ -15,7 +15,8 @@ import (
 func AuthMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
-		token, err := ctx.Cookie("token") //cookieからtokenの取得
+		//cookieからtokenの取得
+		token, err := ctx.Cookie("token")
 
 		//tokenが存在しない場合
 		if err != nil {
@@ -24,6 +25,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
+		//Userの復元
 		user, err := serviceInstance.RestoreUser(ctx, token)
 		if err != nil {
 			ctx.JSON(http.StatusSeeOther, gin.H{"message": msg.ShouldLoginErr, "path": ctx.Request.URL.Path})
@@ -73,7 +75,8 @@ func login(ctx *gin.Context) {
 		return
 	}
 
-	ctx.SetCookie("token", token, config.Config.ACCESS_TOKEN_HOUR*3600, "/", "localhost", false, true) //cookieにセット
+	//cookieにセット
+	ctx.SetCookie("token", token, config.Config.ACCESS_TOKEN_HOUR*3600, "/", "localhost", false, true)
 
 	ctx.JSON(http.StatusOK, gin.H{"user": filter.PersonalUser(spUser)})
 

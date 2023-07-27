@@ -9,16 +9,29 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func getUsersByName(ctx *gin.Context) {
-	name := ctx.Param("name")
-	users, err := serviceInstance.GetUsersByName(ctx, name)
-	users = funk.Map(users, func(user *model.User) *model.User {
+func getUserById(ctx *gin.Context) {
+	id := ctx.Param("id")
+	user, err := serviceInstance.GetUserById(ctx, id)
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, err.Error())
+	} else {
+		ctx.JSON(http.StatusOK, gin.H{"user": filter.SocialUser(user)})
+	}
+}
+
+func getUsers(ctx *gin.Context) {
+	userOption := &model.User{
+		Name: ctx.Query("name"),
+	}
+	users, err := serviceInstance.GetUsers(ctx, userOption)
+	filteredUsers := funk.Map(users, func(user *model.User) *model.User {
 		return filter.SocialUser(user)
 	})
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, err.Error())
 	} else {
-		ctx.JSON(http.StatusOK, gin.H{"users": users})
+		ctx.JSON(http.StatusOK, gin.H{"users": filteredUsers})
 	}
 }
