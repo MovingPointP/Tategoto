@@ -2,11 +2,9 @@ package controller
 
 import (
 	"net/http"
-	"strconv"
 	"tategoto/config"
 	"tategoto/config/msg"
 	"tategoto/model"
-	"tategoto/pkg/auth"
 	"tategoto/pkg/filter"
 
 	"github.com/gin-gonic/gin"
@@ -62,14 +60,7 @@ func login(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 	}
 
-	spUser, err := serviceInstance.Login(ctx, &user)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
-		return
-	}
-
-	//token作成
-	token, err := auth.CreateUserJWT(strconv.Itoa(int(spUser.ID)))
+	spUser, token, err := serviceInstance.Login(ctx, &user)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return

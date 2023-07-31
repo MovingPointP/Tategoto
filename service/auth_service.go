@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"strconv"
 	"tategoto/config/msg"
 	"tategoto/model"
 	"tategoto/pkg/auth"
@@ -55,21 +56,27 @@ func (us *userService) SignUp(ctx context.Context, user *model.User) (*model.Use
 }
 
 // TODO: unique_nameでのLogin
-func (us *userService) Login(ctx context.Context, user *model.User) (*model.User, error) {
+func (us *userService) Login(ctx context.Context, user *model.User) (*model.User, string, error) {
 	//ユーザー取得
 	spUser, err := us.ur.GetUserByMail(ctx, user.Mail)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	} else if spUser.Mail == "" {
 		//メール非存在エラー
-		return nil, errors.New(msg.IncorrectMailOrPasswordErr)
+		return nil, "", errors.New(msg.IncorrectMailOrPasswordErr)
 	}
 
 	//パスワード比較
 	err = auth.CompareHashAndPassword(spUser.Password, user.Password)
 	if err != nil {
 		//パスワード不一致エラー
-		return nil, errors.New(msg.IncorrectMailOrPasswordErr)
+		return nil, "", errors.New(msg.IncorrectMailOrPasswordErr)
 	}
-	return spUser, nil
+
+	//token作成
+	token, err := auth.CreateUserJWT(strconv.Itoa(int(spUser.ID)))
+	if err != nil {
+		return nil, "", err
+	}
+	return spUser, token, nil
 }

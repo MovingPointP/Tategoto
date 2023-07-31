@@ -9,7 +9,7 @@ import (
 type UserService interface {
 	RestoreUser(ctx context.Context, token string) (*model.User, error)
 	SignUp(ctx context.Context, user *model.User) (*model.User, error)
-	Login(ctx context.Context, user *model.User) (*model.User, error)
+	Login(ctx context.Context, user *model.User) (*model.User, string, error)
 	GetUserById(ctx context.Context, id string) (*model.User, error)
 	GetUsers(ctx context.Context, userOption *model.User) ([]*model.User, error)
 }
