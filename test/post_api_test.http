@@ -1,0 +1,15 @@
+GET http://localhost:8080/api/posts/1
+
+###
+
+GET http://localhost:8080/api/posts?uid=1
+
+###
+
+POST http://localhost:8080/api/posts
+Content-Type: application/json
+
+{
+  "content": "hello",
+  "user_id": 1
+}

@@ -28,6 +28,9 @@ func GetRouter(db *gorm.DB) *gin.Engine {
 	{
 		api.GET("/users/:id", getUserById)
 		api.GET("/users", getUsers)
+		api.GET("/posts/:id", getPostById)
+		api.GET("/posts", getPosts)
+		api.POST("/posts", createPost)
 	}
 
 	r.NoRoute(func(c *gin.Context) {

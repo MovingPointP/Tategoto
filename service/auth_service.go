@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"errors"
-	"strconv"
 	"tategoto/config/msg"
 	"tategoto/model"
 	"tategoto/pkg/auth"
@@ -15,6 +14,7 @@ func (us *userService) RestoreUser(ctx context.Context, token string) (*model.Us
 	if err != nil {
 		return nil, err
 	}
+
 	user, err := us.ur.GetUserById(ctx, userId)
 	if err != nil {
 		return nil, err
@@ -74,7 +74,7 @@ func (us *userService) Login(ctx context.Context, user *model.User) (*model.User
 	}
 
 	//token作成
-	token, err := auth.CreateUserJWT(strconv.Itoa(int(spUser.ID)))
+	token, err := auth.CreateUserJWT(spUser.ID)
 	if err != nil {
 		return nil, "", err
 	}

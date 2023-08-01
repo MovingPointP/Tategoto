@@ -11,7 +11,7 @@ type UserRepository interface {
 	//Insert
 	CreateUser(ctx context.Context, user *model.User) error
 	//Select
-	GetUserById(ctx context.Context, id string) (*model.User, error)
+	GetUserById(ctx context.Context, id uint) (*model.User, error)
 	GetUserByMail(ctx context.Context, mail string) (*model.User, error)
 	GetUsers(ctx context.Context, userOption *model.User) ([]*model.User, error)
 }
@@ -20,16 +20,12 @@ type userRepository struct {
 	db gorm.DB
 }
 
-func NewUserRepository(db *gorm.DB) UserRepository {
-	return &userRepository{db: *db}
-}
-
 func (ur *userRepository) CreateUser(ctx context.Context, user *model.User) error {
 	result := ur.db.Create(user)
 	return result.Error
 }
 
-func (ur *userRepository) GetUserById(ctx context.Context, id string) (*model.User, error) {
+func (ur *userRepository) GetUserById(ctx context.Context, id uint) (*model.User, error) {
 	var user *model.User
 	result := ur.db.
 		Where("id = ?", id).

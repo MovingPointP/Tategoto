@@ -15,7 +15,7 @@ func main() {
 	db := connect.GetConnection()
 	defer connect.CloseConnection(db)
 	//migration
-	db.AutoMigrate(&model.User{})
+	db.AutoMigrate(&model.User{}, &model.Post{})
 
 	//GinのEngine取得
 	router := controller.GetRouter(db)
