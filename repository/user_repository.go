@@ -9,7 +9,7 @@ import (
 
 type UserRepository interface {
 	//Insert
-	CreateUser(ctx context.Context, user *model.User) error
+	CreateUser(ctx context.Context, user *model.User) (*model.User, error)
 	//Select
 	GetUserById(ctx context.Context, id uint) (*model.User, error)
 	GetUserByMail(ctx context.Context, mail string) (*model.User, error)
@@ -20,9 +20,9 @@ type userRepository struct {
 	db gorm.DB
 }
 
-func (ur *userRepository) CreateUser(ctx context.Context, user *model.User) error {
-	result := ur.db.Create(user)
-	return result.Error
+func (ur *userRepository) CreateUser(ctx context.Context, user *model.User) (*model.User, error) {
+	result := ur.db.Create(&user)
+	return user, result.Error
 }
 
 func (ur *userRepository) GetUserById(ctx context.Context, id uint) (*model.User, error) {

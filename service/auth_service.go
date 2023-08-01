@@ -42,12 +42,7 @@ func (us *userService) SignUp(ctx context.Context, user *model.User) (*model.Use
 	user.Password = pw
 
 	//ユーザー作成
-	if err := us.ur.CreateUser(ctx, user); err != nil {
-		return nil, err
-	}
-
-	//ユーザー取得
-	spUser, err = us.ur.GetUserByMail(ctx, user.Mail)
+	spUser, err = us.ur.CreateUser(ctx, user)
 	if err != nil {
 		return nil, err
 	}

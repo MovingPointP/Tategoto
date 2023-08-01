@@ -13,14 +13,14 @@ func getUserById(ctx *gin.Context) {
 	id := ctx.Param("id")
 	uid, err := funk.StringToUint(id)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, err.Error())
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 	}
 
 	user, err := serviceInstance.GetUserById(ctx, uid)
 
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, err.Error())
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 	} else {
 		ctx.JSON(http.StatusOK, gin.H{"user": filter.SocialUser(user)})
 	}
@@ -36,7 +36,7 @@ func getUsers(ctx *gin.Context) {
 	})
 
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, err.Error())
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 	} else {
 		ctx.JSON(http.StatusOK, gin.H{"users": filteredUsers})
 	}
