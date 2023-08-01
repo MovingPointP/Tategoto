@@ -9,7 +9,7 @@ import (
 
 func main() {
 	//.envの読み込み
-	config.InitAppConfig()
+	config.InitTestConfig()
 
 	//DBに接続
 	db := connect.GetConnection()
