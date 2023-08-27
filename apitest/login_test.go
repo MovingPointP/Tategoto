@@ -12,18 +12,18 @@ import (
 )
 
 func TestLogin(t *testing.T) {
-	//r取得 table初期化
+	//router取得 table初期化
 	r := NewRouter()
 
-	noMailLogin(t, r)
-	successSignup(t, r)
-	duplicateSignUp(t, r)
-	discordancePasswordLogin(t, r)
-	successLogin(t, r)
+	noMailLogin_400(t, r)
+	successSignup_200(t, r)
+	duplicateSignUp_400(t, r)
+	discordancePasswordLogin_400(t, r)
+	successLogin_200(t, r)
 }
 
 // 存在しないユーザーログイン
-func noMailLogin(t *testing.T, r *gin.Engine) {
+func noMailLogin_400(t *testing.T, r *gin.Engine) {
 	requestJson := `{ "mail": "hoge@mail.com", "password": "hogehoge"}`
 	body := bytes.NewBuffer([]byte(requestJson))
 
@@ -31,21 +31,21 @@ func noMailLogin(t *testing.T, r *gin.Engine) {
 	responseJson := `{ "message":"` + msg.IncorrectMailOrPasswordErr + `"}`
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("POST", "http://localhost:8080/login", body)
+	req, _ := http.NewRequest("POST", "http://localhost:8080/api/login", body)
 	req.Header.Set("Content-Type", "application/json")
 	r.ServeHTTP(w, req)
 
 	assert.JSONEq(t, w.Body.String(), responseJson)
-	assert.Equal(t, w.Code, 500)
+	assert.Equal(t, w.Code, 400)
 }
 
 // 正常なサインアップ
-func successSignup(t *testing.T, r *gin.Engine) {
+func successSignup_200(t *testing.T, r *gin.Engine) {
 	requestJson := `{ "name": "hogeman", "mail": "hoge@mail.com", "password": "hogehoge"}`
 	body := bytes.NewBuffer([]byte(requestJson))
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("POST", "http://localhost:8080/signup", body)
+	req, _ := http.NewRequest("POST", "http://localhost:8080/api/signup", body)
 	req.Header.Set("Content-Type", "application/json")
 	r.ServeHTTP(w, req)
 
@@ -53,7 +53,7 @@ func successSignup(t *testing.T, r *gin.Engine) {
 }
 
 // 重複ユーザーサインアップ
-func duplicateSignUp(t *testing.T, r *gin.Engine) {
+func duplicateSignUp_400(t *testing.T, r *gin.Engine) {
 	requestJson := `{ "name": "hogewoman", "mail": "hoge@mail.com", "password": "hogehoge"}`
 	body := bytes.NewBuffer([]byte(requestJson))
 
@@ -61,16 +61,16 @@ func duplicateSignUp(t *testing.T, r *gin.Engine) {
 	responseJson := `{ "message":"` + msg.DuplicateMailErr + `"}`
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("POST", "http://localhost:8080/signup", body)
+	req, _ := http.NewRequest("POST", "http://localhost:8080/api/signup", body)
 	req.Header.Set("Content-Type", "application/json")
 	r.ServeHTTP(w, req)
 
 	assert.JSONEq(t, w.Body.String(), responseJson)
-	assert.Equal(t, w.Code, 500)
+	assert.Equal(t, w.Code, 400)
 }
 
 // パスワード不一致ログイン
-func discordancePasswordLogin(t *testing.T, r *gin.Engine) {
+func discordancePasswordLogin_400(t *testing.T, r *gin.Engine) {
 	requestJson := `{ "mail": "hoge@mail.com", "password": "fugafuga"}`
 	body := bytes.NewBuffer([]byte(requestJson))
 
@@ -78,21 +78,21 @@ func discordancePasswordLogin(t *testing.T, r *gin.Engine) {
 	responseJson := `{ "message":"` + msg.IncorrectMailOrPasswordErr + `"}`
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("POST", "http://localhost:8080/login", body)
+	req, _ := http.NewRequest("POST", "http://localhost:8080/api/login", body)
 	req.Header.Set("Content-Type", "application/json")
 	r.ServeHTTP(w, req)
 
 	assert.JSONEq(t, w.Body.String(), responseJson)
-	assert.Equal(t, w.Code, 500)
+	assert.Equal(t, w.Code, 400)
 }
 
 // 正常なログイン
-func successLogin(t *testing.T, r *gin.Engine) {
+func successLogin_200(t *testing.T, r *gin.Engine) {
 	requestJson := `{ "mail": "hoge@mail.com", "password": "hogehoge"}`
 	body := bytes.NewBuffer([]byte(requestJson))
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("POST", "http://localhost:8080/login", body)
+	req, _ := http.NewRequest("POST", "http://localhost:8080/api/login", body)
 	req.Header.Set("Content-Type", "application/json")
 	r.ServeHTTP(w, req)
 

@@ -45,7 +45,7 @@ func signup(ctx *gin.Context) {
 
 	spUser, err := serviceInstance.SignUp(ctx, &user)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
@@ -62,7 +62,7 @@ func login(ctx *gin.Context) {
 
 	spUser, token, err := serviceInstance.Login(ctx, &user)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 

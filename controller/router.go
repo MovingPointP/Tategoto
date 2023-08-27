@@ -20,8 +20,11 @@ func GetRouter(db *gorm.DB) *gin.Engine {
 	serviceInstance = service.New(repositoryInstance)
 
 	//routing
-	r.POST("/signup", signup)
-	r.POST("/login", login)
+	auth := r.Group("/api")
+	{
+		auth.POST("/signup", signup)
+		auth.POST("/login", login)
+	}
 
 	api := r.Group("/api")
 	api.Use(AuthMiddleware()) //事前・事後処理
