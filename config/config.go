@@ -30,7 +30,7 @@ func InitAppConfig() {
 }
 
 func InitTestConfig() {
-	if err := godotenv.Load("cmd/test_app/.env"); err != nil {
+	if err := godotenv.Load("../apitest/.env"); err != nil {
 		panic(err)
 	}
 	access_token_hour, _ := strconv.Atoi(os.Getenv("access_token_hour"))
