@@ -33,9 +33,15 @@ func GetRouter(db *gorm.DB) *gin.Engine {
 		api.GET("/users", getUsers)
 		api.GET("/posts/:id", getPostByID)
 		api.GET("/posts", getPostsByUID)
-		api.POST("/posts", createPost)
+
+		postHasID := api.Group("/")
+		postHasID.Use(compareTokenAndPost())
+		{
+			postHasID.POST("/posts", createPost)
+		}
 	}
 
+	//routingなし
 	r.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, "404:NOT FOUND")
 	})

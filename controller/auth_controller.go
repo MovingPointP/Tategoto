@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// tokenチェック
 func tokenRequired() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
@@ -33,6 +34,36 @@ func tokenRequired() gin.HandlerFunc {
 
 		ctx.Set("AuthorizedUser", user) //userを保持
 		ctx.Next()                      //この行より前は事前処理、後は事後処理
+	}
+}
+
+// tokenとpostのuserID比較
+func compareTokenAndPost() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		authUser, _ := ctx.Get("AuthorizedUser")
+		authorizedUser, ok := authUser.(*model.User)
+		if !ok {
+			ctx.JSON(http.StatusSeeOther, gin.H{"message": msg.ShouldLoginErr, "path": ctx.Request.URL.Path})
+			ctx.Abort()
+			return
+		}
+
+		var post model.Post
+		//postにバインド
+		if err := ctx.ShouldBindJSON(&post); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"message": msg.PostBindErr})
+			ctx.Abort()
+			return
+		}
+
+		if authorizedUser.ID != post.UserID {
+			ctx.JSON(http.StatusBadRequest, gin.H{"message": msg.IncorrectUserIDErr, "path": ctx.Request.URL.Path})
+			ctx.Abort()
+			return
+		}
+
+		ctx.Set("Post", &post)
+		ctx.Next()
 	}
 }
 

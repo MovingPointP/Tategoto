@@ -8,4 +8,5 @@ var (
 	ExpiredTokenErr            = "トークンの期限が切れています。"
 	ShouldLoginErr             = "ログインが必要な処理です。"
 	IncorrectUserIDErr         = "ログインしたユーザーIDと異なります。"
+	PostBindErr                = "postの割り当てに失敗しました。"
 )

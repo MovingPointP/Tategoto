@@ -9,10 +9,10 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-func CreateUserJWT(userId uint) (string, error) {
+func CreateUserJWT(userID uint) (string, error) {
 	//ペイロード
 	claims := jwt.MapClaims{
-		"user_id": userId,
+		"user_id": userID,
 		"exp":     time.Now().Add(time.Hour * time.Duration(config.Config.ACCESS_TOKEN_HOUR)).Unix(), //トークン期限
 	}
 

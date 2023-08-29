@@ -9,31 +9,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// tokenとpostのuserID比較
-func CompareTokenAndPost(ctx *gin.Context, post *model.Post) bool {
-	authUser, _ := ctx.Get("AuthorizedUser")
-	authorizedUser, ok := authUser.(*model.User)
-	if !ok {
-		ctx.JSON(http.StatusSeeOther, gin.H{"message": msg.ShouldLoginErr, "path": ctx.Request.URL.Path})
-		return false
-	}
-	return authorizedUser.ID == post.UserID
-}
-
 func createPost(ctx *gin.Context) {
-	var post model.Post
-	//postにバインド
-	if err := ctx.ShouldBindJSON(&post); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+	pos, _ := ctx.Get("Post")
+	post, ok := pos.(*model.Post)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": msg.PostBindErr})
 		return
 	}
 
-	if !CompareTokenAndPost(ctx, &post) {
-		ctx.JSON(http.StatusSeeOther, gin.H{"message": msg.ShouldLoginErr, "path": ctx.Request.URL.Path})
-		return
-	}
-
-	spPost, err := serviceInstance.CreatePost(ctx, &post)
+	spPost, err := serviceInstance.CreatePost(ctx, post)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
