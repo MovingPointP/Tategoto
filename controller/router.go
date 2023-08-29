@@ -27,12 +27,12 @@ func GetRouter(db *gorm.DB) *gin.Engine {
 	}
 
 	api := r.Group("/api")
-	api.Use(AuthMiddleware()) //事前・事後処理
+	api.Use(tokenRequired()) //事前・事後処理
 	{
-		api.GET("/users/:id", getUserById)
+		api.GET("/users/:id", getUserByID)
 		api.GET("/users", getUsers)
-		api.GET("/posts/:id", getPostById)
-		api.GET("/posts", getPosts)
+		api.GET("/posts/:id", getPostByID)
+		api.GET("/posts", getPostsByUID)
 		api.POST("/posts", createPost)
 	}
 

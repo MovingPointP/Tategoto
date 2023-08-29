@@ -10,12 +10,12 @@ import (
 
 func (us *userService) RestoreUser(ctx context.Context, token string) (*model.User, error) {
 	//jwtの検証
-	userId, err := auth.VerifyUserJWT(token)
+	userID, err := auth.VerifyUserJWT(token)
 	if err != nil {
 		return nil, err
 	}
 
-	user, err := us.ur.GetUserById(ctx, userId)
+	user, err := us.ur.GetUserByID(ctx, userID)
 	if err != nil {
 		return nil, err
 	}

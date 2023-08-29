@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AuthMiddleware() gin.HandlerFunc {
+func tokenRequired() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
 		//cookieからtokenの取得
@@ -28,10 +28,11 @@ func AuthMiddleware() gin.HandlerFunc {
 		if err != nil {
 			ctx.JSON(http.StatusSeeOther, gin.H{"message": msg.ShouldLoginErr, "path": ctx.Request.URL.Path})
 			ctx.Abort()
-		} else {
-			ctx.Set("authorizedUser", user) //userを保持
-			ctx.Next()                      //この行より前は事前処理、後は事後処理
+			return
 		}
+
+		ctx.Set("AuthorizedUser", user) //userを保持
+		ctx.Next()                      //この行より前は事前処理、後は事後処理
 	}
 }
 
@@ -50,7 +51,6 @@ func signup(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"user": filter.PersonalUser(spUser)})
-
 }
 
 func login(ctx *gin.Context) {
@@ -70,5 +70,4 @@ func login(ctx *gin.Context) {
 	ctx.SetCookie("token", token, config.Config.ACCESS_TOKEN_HOUR*3600, "/", "localhost", false, true)
 
 	ctx.JSON(http.StatusOK, gin.H{"user": filter.PersonalUser(spUser)})
-
 }

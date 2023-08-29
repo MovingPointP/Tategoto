@@ -5,23 +5,29 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"tategoto/config/msg"
+	"tategoto/pkg/auth"
 	"testing"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
 
+var token string
+
 func TestPost(t *testing.T) {
 	//router取得 table初期化
 	r := NewRouter()
-	signup(t, r)
+
+	//token取得
+	token, _ = auth.CreateUserJWT(1)
+
+	Signup(t, r)
 	beforeLoginPost_303(t, r)
-	login(t, r)
 	successPost_200(t, r)
 }
 
 // サインアップ
-func signup(t *testing.T, r *gin.Engine) {
+func Signup(t *testing.T, r *gin.Engine) {
 	requestJson := `{ "name": "hogeman", "mail": "hoge@mail.com", "password": "hogehoge"}`
 	body := bytes.NewBuffer([]byte(requestJson))
 
@@ -33,7 +39,7 @@ func signup(t *testing.T, r *gin.Engine) {
 	assert.Equal(t, w.Code, 200)
 }
 
-// ログインなしポスト
+// tokenなしポスト
 func beforeLoginPost_303(t *testing.T, r *gin.Engine) {
 	requestJson := `{ "content": "hello", "user_id": "1"}`
 	body := bytes.NewBuffer([]byte(requestJson))
@@ -50,22 +56,9 @@ func beforeLoginPost_303(t *testing.T, r *gin.Engine) {
 	assert.Equal(t, w.Code, 303)
 }
 
-// ログイン
-func login(t *testing.T, r *gin.Engine) {
-	requestJson := `{ "mail": "hoge@mail.com", "password": "hogehoge"}`
-	body := bytes.NewBuffer([]byte(requestJson))
-
-	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("POST", "http://localhost:8080/api/login", body)
-	req.Header.Set("Content-Type", "application/json")
-	r.ServeHTTP(w, req)
-
-	assert.Equal(t, w.Code, 200)
-}
-
 // 正常なポスト
 func successPost_200(t *testing.T, r *gin.Engine) {
-	requestJson := `{ "content": "hello", "user_id": "1"}`
+	requestJson := `{ "content": "hello", "user_id": 1}`
 	body := bytes.NewBuffer([]byte(requestJson))
 
 	w := httptest.NewRecorder()
@@ -73,7 +66,7 @@ func successPost_200(t *testing.T, r *gin.Engine) {
 	req.Header.Set("Content-Type", "application/json")
 	req.AddCookie(&http.Cookie{
 		Name:  "token",
-		Value: "test",
+		Value: token,
 	})
 	r.ServeHTTP(w, req)
 

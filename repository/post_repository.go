@@ -11,7 +11,7 @@ type PostRepository interface {
 	//Insert
 	CreatePost(ctx context.Context, post *model.Post) (*model.Post, error)
 	//Select
-	GetPostById(ctx context.Context, id uint) (*model.Post, error)
+	GetPostByID(ctx context.Context, id uint) (*model.Post, error)
 	GetPosts(ctx context.Context, postOption *model.Post) ([]*model.Post, error)
 }
 
@@ -24,7 +24,7 @@ func (pr *postRepository) CreatePost(ctx context.Context, post *model.Post) (*mo
 	return post, result.Error
 }
 
-func (pr *postRepository) GetPostById(ctx context.Context, id uint) (*model.Post, error) {
+func (pr *postRepository) GetPostByID(ctx context.Context, id uint) (*model.Post, error) {
 	var post *model.Post
 	result := pr.db.
 		Where("id = ?", id).

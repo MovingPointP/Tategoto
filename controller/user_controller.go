@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func getUserById(ctx *gin.Context) {
+func getUserByID(ctx *gin.Context) {
 	id := ctx.Param("id")
 	uid, err := funk.StringToUint(id)
 	if err != nil {
@@ -17,7 +17,7 @@ func getUserById(ctx *gin.Context) {
 		return
 	}
 
-	user, err := serviceInstance.GetUserById(ctx, uid)
+	user, err := serviceInstance.GetUserByID(ctx, uid)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
