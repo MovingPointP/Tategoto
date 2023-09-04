@@ -2,44 +2,30 @@ package apitest
 
 import (
 	"bytes"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"tategoto/config/msg"
-	"tategoto/pkg/auth"
 	"testing"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
 
-var token string
-
 func TestPost(t *testing.T) {
 	//router取得 table初期化
 	r := NewRouter()
 
-	//token取得
-	token, _ = auth.CreateUserJWT(1)
-
-	Signup(t, r)
+	SuccessSignup_200(t, r)
 	beforeLoginPost_303(t, r)
-	successPost_200(t, r)
+	successPostPost_200(t, r)
+	beforeLoginGetPostByID_303(t, r)
+	successGetPostByID_200(t, r)
+	successGetPostsWithQuery_200(t, r)
 }
 
-// サインアップ
-func Signup(t *testing.T, r *gin.Engine) {
-	requestJson := `{ "name": "hogeman", "mail": "hoge@mail.com", "password": "hogehoge"}`
-	body := bytes.NewBuffer([]byte(requestJson))
-
-	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("POST", "http://localhost:8080/api/signup", body)
-	req.Header.Set("Content-Type", "application/json")
-	r.ServeHTTP(w, req)
-
-	assert.Equal(t, w.Code, 200)
-}
-
-// tokenなしポスト
+// tokenなしのポストの投稿
 func beforeLoginPost_303(t *testing.T, r *gin.Engine) {
 	requestJson := `{ "content": "hello", "user_id": "1"}`
 	body := bytes.NewBuffer([]byte(requestJson))
@@ -52,14 +38,16 @@ func beforeLoginPost_303(t *testing.T, r *gin.Engine) {
 	req.Header.Set("Content-Type", "application/json")
 	r.ServeHTTP(w, req)
 
-	assert.JSONEq(t, w.Body.String(), responseJson)
-	assert.Equal(t, w.Code, 303)
+	assert.JSONEq(t, responseJson, w.Body.String())
+	assert.Equal(t, 303, w.Code)
 }
 
-// 正常なポスト
-func successPost_200(t *testing.T, r *gin.Engine) {
+// 正常なポストの投稿
+func successPostPost_200(t *testing.T, r *gin.Engine) {
 	requestJson := `{ "content": "hello", "user_id": 1}`
 	body := bytes.NewBuffer([]byte(requestJson))
+
+	responseElement := []string{`"ID":1`, `"content":"hello"`, `"user_id":1`}
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("POST", "http://localhost:8080/api/posts", body)
@@ -70,5 +58,89 @@ func successPost_200(t *testing.T, r *gin.Engine) {
 	})
 	r.ServeHTTP(w, req)
 
-	assert.Equal(t, w.Code, 200)
+	for _, v := range responseElement {
+		hasElement := strings.Contains(w.Body.String(), v)
+		assert.Equal(t, true, hasElement)
+		if !hasElement {
+			fmt.Println("expected", v)
+			fmt.Println("actual", w.Body.String())
+		}
+	}
+	assert.Equal(t, 200, w.Code)
+}
+
+// tokenなしのIDによるポストの取得
+func beforeLoginGetPostByID_303(t *testing.T, r *gin.Engine) {
+
+	//ログインが必要な処理
+	responseJson := `{ "message":"` + msg.ShouldLoginErr + `", "path":"/api/posts/1"}`
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "http://localhost:8080/api/posts/1", nil)
+	r.ServeHTTP(w, req)
+
+	assert.JSONEq(t, responseJson, w.Body.String())
+	assert.Equal(t, 303, w.Code)
+}
+
+// 正常なIDによるポストの取得
+func successGetPostByID_200(t *testing.T, r *gin.Engine) {
+
+	responseElement := []string{`"ID":1`, `"content":"hello"`, `"user_id":1`}
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "http://localhost:8080/api/posts/1", nil)
+	req.AddCookie(&http.Cookie{
+		Name:  "token",
+		Value: token,
+	})
+	r.ServeHTTP(w, req)
+
+	for _, v := range responseElement {
+		hasElement := strings.Contains(w.Body.String(), v)
+		assert.Equal(t, true, hasElement)
+		if !hasElement {
+			fmt.Println("expected", v)
+			fmt.Println("actual", w.Body.String())
+		}
+	}
+	assert.Equal(t, 200, w.Code)
+}
+
+// tokenなしのクエリによるポストの取得
+func beforeLoginGetPostsWithQuery_303(t *testing.T, r *gin.Engine) {
+
+	//ログインが必要な処理
+	responseJson := `{ "message":"` + msg.ShouldLoginErr + `", "path":"/api/posts/1"}`
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "http://localhost:8080/api/posts?uid=1", nil)
+	r.ServeHTTP(w, req)
+
+	assert.JSONEq(t, responseJson, w.Body.String())
+	assert.Equal(t, 303, w.Code)
+}
+
+// 正常なクエリによるポストの取得
+func successGetPostsWithQuery_200(t *testing.T, r *gin.Engine) {
+
+	responseElement := []string{`"ID":1`, `"content":"hello"`, `"user_id":1`}
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "http://localhost:8080/api/posts?uid=1", nil)
+	req.AddCookie(&http.Cookie{
+		Name:  "token",
+		Value: token,
+	})
+	r.ServeHTTP(w, req)
+
+	for _, v := range responseElement {
+		hasElement := strings.Contains(w.Body.String(), v)
+		assert.Equal(t, true, hasElement)
+		if !hasElement {
+			fmt.Println("expected", v)
+			fmt.Println("actual", w.Body.String())
+		}
+	}
+	assert.Equal(t, 200, w.Code)
 }

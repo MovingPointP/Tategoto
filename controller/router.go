@@ -32,7 +32,7 @@ func GetRouter(db *gorm.DB) *gin.Engine {
 		api.GET("/users/:id", getUserByID)
 		api.GET("/users", getUsers)
 		api.GET("/posts/:id", getPostByID)
-		api.GET("/posts", getPostsByUID)
+		api.GET("/posts", getPosts)
 
 		postHasID := api.Group("/")
 		postHasID.Use(compareTokenAndPost())

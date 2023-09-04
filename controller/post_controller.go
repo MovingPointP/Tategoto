@@ -43,7 +43,7 @@ func getPostByID(ctx *gin.Context) {
 	}
 }
 
-func getPostsByUID(ctx *gin.Context) {
+func getPosts(ctx *gin.Context) {
 
 	userID := ctx.Query("uid")
 	uid, err := funk.StringToUint(userID)
