@@ -21,7 +21,10 @@ func TestPost(t *testing.T) {
 	beforeLoginPost_303(t, r)
 	successPostPost_200(t, r)
 	beforeLoginGetPostByID_303(t, r)
+	GetNoPostByID_200(t, r)
 	successGetPostByID_200(t, r)
+	beforeLoginGetPostsWithQuery_303(t, r)
+	GetNoPostsWithQuery_200(t, r)
 	successGetPostsWithQuery_200(t, r)
 }
 
@@ -83,6 +86,30 @@ func beforeLoginGetPostByID_303(t *testing.T, r *gin.Engine) {
 	assert.Equal(t, 303, w.Code)
 }
 
+// IDによる存在しないポストの取得
+func GetNoPostByID_200(t *testing.T, r *gin.Engine) {
+
+	responseElement := []string{`"ID":0`}
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "http://localhost:8080/api/posts/2", nil)
+	req.AddCookie(&http.Cookie{
+		Name:  "token",
+		Value: token,
+	})
+	r.ServeHTTP(w, req)
+
+	for _, v := range responseElement {
+		hasElement := strings.Contains(w.Body.String(), v)
+		assert.Equal(t, true, hasElement)
+		if !hasElement {
+			fmt.Println("expected", v)
+			fmt.Println("actual", w.Body.String())
+		}
+	}
+	assert.Equal(t, 200, w.Code)
+}
+
 // 正常なIDによるポストの取得
 func successGetPostByID_200(t *testing.T, r *gin.Engine) {
 
@@ -111,7 +138,7 @@ func successGetPostByID_200(t *testing.T, r *gin.Engine) {
 func beforeLoginGetPostsWithQuery_303(t *testing.T, r *gin.Engine) {
 
 	//ログインが必要な処理
-	responseJson := `{ "message":"` + msg.ShouldLoginErr + `", "path":"/api/posts/1"}`
+	responseJson := `{ "message":"` + msg.ShouldLoginErr + `", "path":"/api/posts"}`
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "http://localhost:8080/api/posts?uid=1", nil)
@@ -119,6 +146,30 @@ func beforeLoginGetPostsWithQuery_303(t *testing.T, r *gin.Engine) {
 
 	assert.JSONEq(t, responseJson, w.Body.String())
 	assert.Equal(t, 303, w.Code)
+}
+
+// クエリによる存在しないポストの取得
+func GetNoPostsWithQuery_200(t *testing.T, r *gin.Engine) {
+
+	responseElement := []string{`"posts":[]`}
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "http://localhost:8080/api/posts?uid=2", nil)
+	req.AddCookie(&http.Cookie{
+		Name:  "token",
+		Value: token,
+	})
+	r.ServeHTTP(w, req)
+
+	for _, v := range responseElement {
+		hasElement := strings.Contains(w.Body.String(), v)
+		assert.Equal(t, true, hasElement)
+		if !hasElement {
+			fmt.Println("expected", v)
+			fmt.Println("actual", w.Body.String())
+		}
+	}
+	assert.Equal(t, 200, w.Code)
 }
 
 // 正常なクエリによるポストの取得

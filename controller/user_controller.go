@@ -31,9 +31,15 @@ func getUsers(ctx *gin.Context) {
 		Name: ctx.Query("name"),
 	}
 	users, err := serviceInstance.GetUsers(ctx, userOption)
-	filteredUsers := funk.Map(users, func(user *model.User) *model.User {
-		return filter.SocialUser(user)
-	})
+
+	var filteredUsers []*model.User
+	if len(users) != 0 {
+		filteredUsers = funk.Map(users, func(user *model.User) *model.User {
+			return filter.SocialUser(user)
+		})
+	} else {
+		filteredUsers = users
+	}
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
