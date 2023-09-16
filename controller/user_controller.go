@@ -11,13 +11,8 @@ import (
 
 func getUserByID(ctx *gin.Context) {
 	id := ctx.Param("id")
-	uid, err := funk.StringToUint(id)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
-		return
-	}
 
-	user, err := serviceInstance.GetUserByID(ctx, uid)
+	user, err := serviceInstance.GetUserByID(ctx, id)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})

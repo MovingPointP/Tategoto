@@ -21,7 +21,7 @@ func TestLogin(t *testing.T) {
 	r := NewRouter()
 
 	//token取得
-	token, _ = auth.CreateUserJWT(1)
+	token, _ = auth.CreateUserJWT("1")
 
 	noMailLogin_400(t, r)
 	SuccessSignup_200(t, r)

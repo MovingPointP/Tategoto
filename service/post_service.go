@@ -8,7 +8,7 @@ import (
 
 type PostService interface {
 	CreatePost(ctx context.Context, post *model.Post) (*model.Post, error)
-	GetPostByID(ctx context.Context, id uint) (*model.Post, error)
+	GetPostByID(ctx context.Context, id string) (*model.Post, error)
 	GetPosts(ctx context.Context, postOption *model.Post) ([]*model.Post, error)
 }
 
@@ -24,7 +24,7 @@ func (ps *postService) CreatePost(ctx context.Context, post *model.Post) (*model
 	return spPost, nil
 }
 
-func (ps *postService) GetPostByID(ctx context.Context, id uint) (*model.Post, error) {
+func (ps *postService) GetPostByID(ctx context.Context, id string) (*model.Post, error) {
 
 	return ps.pr.GetPostByID(ctx, id)
 }

@@ -6,6 +6,7 @@ import (
 	"tategoto/config/msg"
 	"tategoto/model"
 	"tategoto/pkg/filter"
+	"tategoto/pkg/ulid"
 
 	"github.com/gin-gonic/gin"
 )
@@ -56,6 +57,14 @@ func compareTokenAndPost() gin.HandlerFunc {
 			return
 		}
 
+		id, err := ulid.CreatePostID()
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"message": msg.GenerateIDErr})
+			ctx.Abort()
+			return
+		}
+		post.ID = id
+
 		if authorizedUser.ID != post.UserID {
 			ctx.JSON(http.StatusBadRequest, gin.H{"message": msg.IncorrectUserIDErr, "path": ctx.Request.URL.Path})
 			ctx.Abort()
@@ -75,6 +84,14 @@ func signup(ctx *gin.Context) {
 		return
 	}
 
+	id, err := ulid.CreateUserID()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": msg.GenerateIDErr})
+		ctx.Abort()
+		return
+	}
+	user.ID = id
+
 	spUser, err := serviceInstance.SignUp(ctx, &user)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
@@ -90,6 +107,14 @@ func login(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&user); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 	}
+
+	id, err := ulid.CreateUserID()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": msg.GenerateIDErr})
+		ctx.Abort()
+		return
+	}
+	user.ID = id
 
 	spUser, token, err := serviceInstance.Login(ctx, &user)
 	if err != nil {

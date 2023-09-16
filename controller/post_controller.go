@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"tategoto/config/msg"
 	"tategoto/model"
-	"tategoto/pkg/funk"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,13 +27,8 @@ func createPost(ctx *gin.Context) {
 
 func getPostByID(ctx *gin.Context) {
 	id := ctx.Param("id")
-	pid, err := funk.StringToUint(id)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, err.Error())
-		return
-	}
 
-	post, err := serviceInstance.GetPostByID(ctx, pid)
+	post, err := serviceInstance.GetPostByID(ctx, id)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, err.Error())
@@ -46,13 +40,8 @@ func getPostByID(ctx *gin.Context) {
 func getPosts(ctx *gin.Context) {
 
 	userID := ctx.Query("uid")
-	uid, err := funk.StringToUint(userID)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, err.Error())
-		return
-	}
 	postOption := &model.Post{
-		UserID: uid,
+		UserID: userID,
 	}
 	posts, err := serviceInstance.GetPosts(ctx, postOption)
 

@@ -47,7 +47,7 @@ func beforeLoginPost_303(t *testing.T, r *gin.Engine) {
 
 // 正常なポストの投稿
 func successPostPost_200(t *testing.T, r *gin.Engine) {
-	requestJson := `{ "content": "hello", "user_id": 1}`
+	requestJson := `{ "content": "hello", "user_id": "1"}`
 	body := bytes.NewBuffer([]byte(requestJson))
 
 	responseElement := []string{`"ID":1`, `"content":"hello"`, `"user_id":1`}

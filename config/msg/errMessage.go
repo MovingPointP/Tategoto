@@ -9,4 +9,5 @@ var (
 	ShouldLoginErr             = "ログインが必要な処理です。"
 	IncorrectUserIDErr         = "ログインしたユーザーIDと異なります。"
 	PostBindErr                = "postの割り当てに失敗しました。"
+	GenerateIDErr              = "IDの生成に失敗しました。"
 )

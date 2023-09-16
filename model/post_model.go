@@ -6,6 +6,7 @@ import (
 
 type Post struct {
 	gorm.Model
+	ID      string `json:"id" gorm:"primaryKey"`
 	Content string `json:"content"`
-	UserID  uint   `json:"user_id" gorm:"not null"`
+	UserID  string `json:"user_id" gorm:"not null"`
 }

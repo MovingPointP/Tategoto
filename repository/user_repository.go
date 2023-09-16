@@ -11,7 +11,7 @@ type UserRepository interface {
 	//Insert
 	CreateUser(ctx context.Context, user *model.User) (*model.User, error)
 	//Select
-	GetUserByID(ctx context.Context, id uint) (*model.User, error)
+	GetUserByID(ctx context.Context, id string) (*model.User, error)
 	GetUserByMail(ctx context.Context, mail string) (*model.User, error)
 	GetUsers(ctx context.Context, userOption *model.User) ([]*model.User, error)
 }
@@ -25,7 +25,7 @@ func (ur *userRepository) CreateUser(ctx context.Context, user *model.User) (*mo
 	return user, result.Error
 }
 
-func (ur *userRepository) GetUserByID(ctx context.Context, id uint) (*model.User, error) {
+func (ur *userRepository) GetUserByID(ctx context.Context, id string) (*model.User, error) {
 	var user *model.User
 	result := ur.db.
 		Where("id = ?", id).

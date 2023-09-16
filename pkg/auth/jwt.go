@@ -9,7 +9,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-func CreateUserJWT(userID uint) (string, error) {
+func CreateUserJWT(userID string) (string, error) {
 	//ペイロード
 	claims := jwt.MapClaims{
 		"user_id": userID,
@@ -28,7 +28,7 @@ func CreateUserJWT(userID uint) (string, error) {
 	return tokenString, nil
 }
 
-func VerifyUserJWT(tokenString string) (uint, error) {
+func VerifyUserJWT(tokenString string) (string, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("")
@@ -37,23 +37,23 @@ func VerifyUserJWT(tokenString string) (uint, error) {
 	})
 
 	if err != nil {
-		return 0, errors.New(msg.VerifyTokenErr)
+		return "", errors.New(msg.VerifyTokenErr)
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 
 	//token検証エラー
 	if !ok || !token.Valid {
-		return 0, errors.New(msg.VerifyTokenErr)
+		return "", errors.New(msg.VerifyTokenErr)
 	}
 
 	//token期限切れ
 	if int64(claims["exp"].(float64)) < time.Now().Unix() {
-		return 0, errors.New(msg.ExpiredTokenErr)
+		return "", errors.New(msg.ExpiredTokenErr)
 	}
 
-	id := claims["user_id"].(float64)
+	id := claims["user_id"].(string)
 
-	return uint(id), nil
+	return id, nil
 
 }
