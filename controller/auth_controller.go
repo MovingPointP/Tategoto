@@ -57,7 +57,7 @@ func compareTokenAndPost() gin.HandlerFunc {
 			return
 		}
 
-		id, err := ulid.CreatePostID()
+		id, err := ulid.CreateULID()
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"message": msg.GenerateIDErr})
 			ctx.Abort()
@@ -84,7 +84,7 @@ func signup(ctx *gin.Context) {
 		return
 	}
 
-	id, err := ulid.CreateUserID()
+	id, err := ulid.CreateULID()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": msg.GenerateIDErr})
 		ctx.Abort()
@@ -108,7 +108,7 @@ func login(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 	}
 
-	id, err := ulid.CreateUserID()
+	id, err := ulid.CreateULID()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": msg.GenerateIDErr})
 		ctx.Abort()
