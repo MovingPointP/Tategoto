@@ -131,7 +131,7 @@ func getNoUsersWithQuery_200(t *testing.T, r *gin.Engine) {
 // 正常なクエリによるユーザーの取得
 func getUsersWithQuery_200(t *testing.T, r *gin.Engine) {
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "http://localhost:8080/api/users?name=sample", nil)
+	req, _ := http.NewRequest("GET", "http://localhost:8080/api/users?name="+SampleUserHoge.Name, nil)
 	req.AddCookie(&http.Cookie{
 		Name:  "token",
 		Value: TokenHoge,

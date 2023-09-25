@@ -10,4 +10,5 @@ func TestAll(t *testing.T) {
 	//以下テスト
 	authFunctions(t, r)
 	userFunctions(t, r)
+	postFunctions(t, r)
 }

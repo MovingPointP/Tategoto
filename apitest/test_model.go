@@ -14,6 +14,10 @@ type resPost struct {
 	Post *model.Post
 }
 
+type resPosts struct {
+	Posts []*model.Post
+}
+
 type resFail struct {
 	Message string
 }
