@@ -32,9 +32,14 @@ func getPostByID(ctx *gin.Context) {
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, err.Error())
-	} else {
-		ctx.JSON(http.StatusOK, gin.H{"post": post})
 	}
+
+	if post.ID == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": msg.NoDataErr})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"post": post})
 }
 
 func getPosts(ctx *gin.Context) {
@@ -47,7 +52,13 @@ func getPosts(ctx *gin.Context) {
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, err.Error())
-	} else {
-		ctx.JSON(http.StatusOK, gin.H{"posts": posts})
+		return
 	}
+
+	if len(posts) == 0 {
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": msg.NoDataErr})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"posts": posts})
 }

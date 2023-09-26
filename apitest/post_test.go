@@ -3,7 +3,6 @@ package apitest
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"tategoto/config/msg"
@@ -29,10 +28,10 @@ func postFunctions(t *testing.T, r *gin.Engine) {
 	differentUserIDPost_303(t, r)
 	postPost_200(t, r)
 	beforeLoginGetPostByID_303(t, r)
-	getNoPostByID_200(t, r)
+	getNoPostByID_400(t, r)
 	getPostByID_200(t, r)
 	beforeLoginGetPostsWithQuery_303(t, r)
-	getNoPostsWithQuery_200(t, r)
+	getNoPostsWithQuery_400(t, r)
 	getPostsWithQuery_200(t, r)
 }
 
@@ -123,7 +122,7 @@ func beforeLoginGetPostByID_303(t *testing.T, r *gin.Engine) {
 }
 
 // IDによる存在しないポストの取得
-func getNoPostByID_200(t *testing.T, r *gin.Engine) {
+func getNoPostByID_400(t *testing.T, r *gin.Engine) {
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "http://localhost:8080/api/posts/noting", nil)
 	req.AddCookie(&http.Cookie{
@@ -132,18 +131,13 @@ func getNoPostByID_200(t *testing.T, r *gin.Engine) {
 	})
 	r.ServeHTTP(w, req)
 
-	data := new(resPost)
+	data := new(resFail)
 	jsonBytes := []byte(w.Body.String())
 	json.Unmarshal(jsonBytes, &data)
-	testPost := data.Post
+	message := data.Message
 
-	assert.Equal(t, 200, w.Code)
-	assert.Equal(t, "", testPost.ID)
-	assert.Equal(t, true, testPost.CreatedAt.IsZero())
-	assert.Equal(t, true, testPost.UpdatedAt.IsZero())
-	assert.Equal(t, true, testPost.DeletedAt.Time.IsZero())
-	assert.Equal(t, "", testPost.Content)
-	assert.Equal(t, "", testPost.UserID)
+	assert.Equal(t, 400, w.Code)
+	assert.Equal(t, msg.NoDataErr, message)
 }
 
 // 正常なIDによるポストの取得
@@ -186,7 +180,7 @@ func beforeLoginGetPostsWithQuery_303(t *testing.T, r *gin.Engine) {
 }
 
 // クエリによる存在しないポストの取得
-func getNoPostsWithQuery_200(t *testing.T, r *gin.Engine) {
+func getNoPostsWithQuery_400(t *testing.T, r *gin.Engine) {
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "http://localhost:8080/api/posts?uid=noting", nil)
 	req.AddCookie(&http.Cookie{
@@ -195,13 +189,13 @@ func getNoPostsWithQuery_200(t *testing.T, r *gin.Engine) {
 	})
 	r.ServeHTTP(w, req)
 
-	data := new(resPosts)
+	data := new(resFail)
 	jsonBytes := []byte(w.Body.String())
 	json.Unmarshal(jsonBytes, &data)
-	testPosts := data.Posts
+	message := data.Message
 
-	assert.Equal(t, 200, w.Code)
-	assert.Equal(t, 0, len(testPosts))
+	assert.Equal(t, 400, w.Code)
+	assert.Equal(t, msg.NoDataErr, message)
 }
 
 // 正常なクエリによるポストの取得
@@ -218,10 +212,6 @@ func getPostsWithQuery_200(t *testing.T, r *gin.Engine) {
 	jsonBytes := []byte(w.Body.String())
 	json.Unmarshal(jsonBytes, &data)
 	testPosts := data.Posts
-
-	fmt.Println(SamplePostHello)
-	fmt.Println(SamplePostWorld)
-	fmt.Println(testPosts)
 
 	assert.Equal(t, 200, w.Code)
 	assert.Equal(t, SamplePostHello.ID, testPosts[0].ID)

@@ -22,10 +22,10 @@ import (
 
 func userFunctions(t *testing.T, r *gin.Engine) {
 	beforeLoginGetUserByID_303(t, r)
-	getNoUserByID_200(t, r)
+	getNoUserByID_400(t, r)
 	getUserByID_200(t, r)
 	beforeLoginGetUsersWithQuery_303(t, r)
-	getNoUsersWithQuery_200(t, r)
+	getNoUsersWithQuery_400(t, r)
 	getUsersWithQuery_200(t, r)
 }
 
@@ -45,7 +45,7 @@ func beforeLoginGetUserByID_303(t *testing.T, r *gin.Engine) {
 }
 
 // IDによる存在しないユーザーの取得
-func getNoUserByID_200(t *testing.T, r *gin.Engine) {
+func getNoUserByID_400(t *testing.T, r *gin.Engine) {
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "http://localhost:8080/api/users/hoge", nil)
 	req.AddCookie(&http.Cookie{
@@ -54,19 +54,13 @@ func getNoUserByID_200(t *testing.T, r *gin.Engine) {
 	})
 	r.ServeHTTP(w, req)
 
-	data := new(resUser)
+	data := new(resFail)
 	jsonBytes := []byte(w.Body.String())
 	json.Unmarshal(jsonBytes, &data)
-	testUser := data.User
+	message := data.Message
 
-	assert.Equal(t, 200, w.Code)
-	assert.Equal(t, "", testUser.ID)
-	assert.Equal(t, true, testUser.CreatedAt.IsZero())
-	assert.Equal(t, true, testUser.UpdatedAt.IsZero())
-	assert.Equal(t, true, testUser.DeletedAt.Time.IsZero())
-	assert.Equal(t, "", testUser.Mail)
-	assert.Equal(t, "", testUser.Password)
-	assert.Equal(t, "", testUser.Name)
+	assert.Equal(t, 400, w.Code)
+	assert.Equal(t, msg.NoDataErr, message)
 }
 
 // 正常なIDによるユーザーの取得
@@ -110,7 +104,7 @@ func beforeLoginGetUsersWithQuery_303(t *testing.T, r *gin.Engine) {
 }
 
 // クエリによる存在しないユーザーの取得
-func getNoUsersWithQuery_200(t *testing.T, r *gin.Engine) {
+func getNoUsersWithQuery_400(t *testing.T, r *gin.Engine) {
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "http://localhost:8080/api/users?name=noting", nil)
 	req.AddCookie(&http.Cookie{
@@ -119,13 +113,13 @@ func getNoUsersWithQuery_200(t *testing.T, r *gin.Engine) {
 	})
 	r.ServeHTTP(w, req)
 
-	data := new(resUsers)
+	data := new(resFail)
 	jsonBytes := []byte(w.Body.String())
 	json.Unmarshal(jsonBytes, &data)
-	testUsers := data.Users
+	message := data.Message
 
-	assert.Equal(t, 200, w.Code)
-	assert.Equal(t, 0, len(testUsers))
+	assert.Equal(t, 400, w.Code)
+	assert.Equal(t, msg.NoDataErr, message)
 }
 
 // 正常なクエリによるユーザーの取得

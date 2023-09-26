@@ -10,4 +10,5 @@ var (
 	IncorrectUserIDErr         = "ログインしたユーザーIDと異なります。"
 	PostBindErr                = "postの割り当てに失敗しました。"
 	GenerateIDErr              = "IDの生成に失敗しました。"
+	NoDataErr                  = "データが存在しません。"
 )
