@@ -25,7 +25,7 @@ import (
 
 func postFunctions(t *testing.T, r *gin.Engine) {
 	beforeLoginPost_303(t, r)
-	differentUserIDPost_303(t, r)
+	differentUserIDPost_400(t, r)
 	postPost_200(t, r)
 	beforeLoginGetPostByID_303(t, r)
 	getNoPostByID_400(t, r)
@@ -55,7 +55,7 @@ func beforeLoginPost_303(t *testing.T, r *gin.Engine) {
 }
 
 // tokenとは異なるuserIDでのポストの投稿
-func differentUserIDPost_303(t *testing.T, r *gin.Engine) {
+func differentUserIDPost_400(t *testing.T, r *gin.Engine) {
 	requestJson := `{ "content": "こんにちは", "user_id": "` + SampleUserFuga.ID + `"}`
 	body := bytes.NewBuffer([]byte(requestJson))
 
