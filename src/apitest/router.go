@@ -1,12 +1,12 @@
 package apitest
 
 import (
-	"tategoto/config"
-	"tategoto/connect"
-	"tategoto/controller"
-	"tategoto/model"
-	"tategoto/repository"
-	"tategoto/service"
+	"tategoto/src/config"
+	"tategoto/src/connect"
+	"tategoto/src/controller"
+	"tategoto/src/model"
+	"tategoto/src/repository"
+	"tategoto/src/service"
 
 	"github.com/gin-gonic/gin"
 )

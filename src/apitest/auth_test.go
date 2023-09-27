@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"tategoto/config/msg"
-	"tategoto/pkg/funk"
+	"tategoto/src/config/msg"
+	"tategoto/src/pkg/funk"
 	"testing"
 	"time"
 

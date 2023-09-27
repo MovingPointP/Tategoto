@@ -2,11 +2,11 @@ package controller
 
 import (
 	"net/http"
-	"tategoto/config"
-	"tategoto/config/msg"
-	"tategoto/model"
-	"tategoto/pkg/filter"
-	"tategoto/pkg/ulid"
+	"tategoto/src/config"
+	"tategoto/src/config/msg"
+	"tategoto/src/model"
+	"tategoto/src/pkg/filter"
+	"tategoto/src/pkg/ulid"
 
 	"github.com/gin-gonic/gin"
 )

@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
-	"tategoto/model"
-	"tategoto/repository"
+	"tategoto/src/model"
+	"tategoto/src/repository"
 )
 
 type PostService interface {

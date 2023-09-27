@@ -2,9 +2,9 @@ package apitest
 
 import (
 	"context"
-	"tategoto/model"
-	"tategoto/pkg/auth"
-	"tategoto/pkg/ulid"
+	"tategoto/src/model"
+	"tategoto/src/pkg/auth"
+	"tategoto/src/pkg/ulid"
 )
 
 var SampleUserHoge *model.User

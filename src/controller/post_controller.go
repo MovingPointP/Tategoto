@@ -2,8 +2,8 @@ package controller
 
 import (
 	"net/http"
-	"tategoto/config/msg"
-	"tategoto/model"
+	"tategoto/src/config/msg"
+	"tategoto/src/model"
 
 	"github.com/gin-gonic/gin"
 )

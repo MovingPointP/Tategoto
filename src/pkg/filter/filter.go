@@ -1,7 +1,7 @@
 package filter
 
 import (
-	"tategoto/model"
+	"tategoto/src/model"
 )
 
 // TODO:filterのフィールドの初期化忘れやfilterし忘れを防ぎたい

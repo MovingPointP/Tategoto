@@ -1,10 +1,10 @@
 package main
 
 import (
-	"tategoto/config"
-	"tategoto/connect"
-	"tategoto/controller"
-	"tategoto/model"
+	"tategoto/src/config"
+	"tategoto/src/connect"
+	"tategoto/src/controller"
+	"tategoto/src/model"
 )
 
 func main() {

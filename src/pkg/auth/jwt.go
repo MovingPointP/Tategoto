@@ -2,8 +2,8 @@ package auth
 
 import (
 	"errors"
-	"tategoto/config"
-	"tategoto/config/msg"
+	"tategoto/src/config"
+	"tategoto/src/config/msg"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
