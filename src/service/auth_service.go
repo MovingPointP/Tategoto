@@ -3,9 +3,9 @@ package service
 import (
 	"context"
 	"errors"
-	"tategoto/src/config/msg"
-	"tategoto/src/model"
-	"tategoto/src/pkg/auth"
+	"tategoto/config/msg"
+	"tategoto/model"
+	"tategoto/pkg/auth"
 )
 
 func (us *userService) RestoreUser(ctx context.Context, token string) (*model.User, error) {

@@ -2,8 +2,8 @@ package controller
 
 import (
 	"net/http"
-	"tategoto/src/repository"
-	"tategoto/src/service"
+	"tategoto/repository"
+	"tategoto/service"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"

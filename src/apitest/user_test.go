@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"tategoto/src/config/msg"
+	"tategoto/config/msg"
 	"testing"
 
 	"github.com/gin-gonic/gin"

@@ -1,6 +1,6 @@
 package apitest
 
-import "tategoto/src/model"
+import "tategoto/model"
 
 type resUser struct {
 	User *model.User

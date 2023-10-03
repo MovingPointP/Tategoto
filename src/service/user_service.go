@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
-	"tategoto/src/model"
-	"tategoto/src/repository"
+	"tategoto/model"
+	"tategoto/repository"
 )
 
 type UserService interface {

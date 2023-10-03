@@ -2,7 +2,7 @@ package repository
 
 import (
 	"context"
-	"tategoto/src/model"
+	"tategoto/model"
 
 	"gorm.io/gorm"
 )

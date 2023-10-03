@@ -1,7 +1,7 @@
 package service
 
 import (
-	"tategoto/src/repository"
+	"tategoto/repository"
 )
 
 type Services interface {

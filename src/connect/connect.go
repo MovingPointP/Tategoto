@@ -1,7 +1,7 @@
 package connect
 
 import (
-	"tategoto/src/config"
+	"tategoto/config"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

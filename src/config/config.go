@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 
@@ -17,27 +18,28 @@ type configList struct {
 var Config configList
 
 func InitAppConfig() {
-	if err := godotenv.Load("cmd/app/.env"); err != nil {
-		panic(err)
-	}
-	access_token_hour, _ := strconv.Atoi(os.Getenv("access_token_hour"))
+	// if err := godotenv.Load("cmd/app/.env"); err != nil {
+	// 	panic(err)
+	// }
+	access_token_hour, _ := strconv.Atoi(os.Getenv("ACCESS_TOKEN_HOUR"))
 	Config = configList{
-		DSN:               os.Getenv("dsn"),
-		PORT:              os.Getenv("server_port"),
+		DSN:               os.Getenv("DSN"),
+		PORT:              os.Getenv("SERVER_PORT"),
 		ACCESS_TOKEN_HOUR: access_token_hour,
-		SECRET_KEY:        os.Getenv("secret_key"),
+		SECRET_KEY:        os.Getenv("SECRET_KEY"),
 	}
+	fmt.Println(Config.DSN)
 }
 
 func InitTestConfig() {
 	if err := godotenv.Load("../apitest/.env"); err != nil {
 		panic(err)
 	}
-	access_token_hour, _ := strconv.Atoi(os.Getenv("access_token_hour"))
+	access_token_hour, _ := strconv.Atoi(os.Getenv("ACCESS_TOKEN_HOUR"))
 	Config = configList{
-		DSN:               os.Getenv("dsn"),
-		PORT:              os.Getenv("server_port"),
+		DSN:               os.Getenv("DSN"),
+		PORT:              os.Getenv("SERVER_PORT"),
 		ACCESS_TOKEN_HOUR: access_token_hour,
-		SECRET_KEY:        os.Getenv("secret_key"),
+		SECRET_KEY:        os.Getenv("SECRET_KEY"),
 	}
 }
