@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 	"errors"
-	"tategoto/config/msg"
+	"tategoto/config/msg/errmsg"
 	"tategoto/model"
 	"tategoto/pkg/auth"
 )
@@ -30,14 +30,14 @@ func (us *userService) SignUp(ctx context.Context, user *model.User) (*model.Use
 		return nil, err
 	} else if spUser.Mail != "" {
 		//重複エラー
-		return nil, errors.New(msg.DuplicateMailErr)
+		return nil, errors.New(errmsg.DuplicateMailErr)
 	}
 
 	//パスワード暗号化
 	pw, err := auth.EncryptPassword(user.Password)
 	if err != nil {
 		//暗号化エラー
-		return nil, errors.New(msg.EncryptionErr)
+		return nil, errors.New(errmsg.EncryptionErr)
 	}
 	user.Password = pw
 
@@ -58,14 +58,14 @@ func (us *userService) Login(ctx context.Context, user *model.User) (*model.User
 		return nil, "", err
 	} else if spUser.Mail == "" {
 		//メール非存在エラー
-		return nil, "", errors.New(msg.IncorrectMailOrPasswordErr)
+		return nil, "", errors.New(errmsg.IncorrectMailOrPasswordErr)
 	}
 
 	//パスワード比較
 	err = auth.CompareHashAndPassword(spUser.Password, user.Password)
 	if err != nil {
 		//パスワード不一致エラー
-		return nil, "", errors.New(msg.IncorrectMailOrPasswordErr)
+		return nil, "", errors.New(errmsg.IncorrectMailOrPasswordErr)
 	}
 
 	//token作成

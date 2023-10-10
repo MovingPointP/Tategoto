@@ -2,7 +2,7 @@ package controller
 
 import (
 	"net/http"
-	"tategoto/config/msg"
+	"tategoto/config/msg/errmsg"
 	"tategoto/model"
 
 	"github.com/gin-gonic/gin"
@@ -12,7 +12,7 @@ func createPost(ctx *gin.Context) {
 	pos, _ := ctx.Get("Post")
 	post, ok := pos.(*model.Post)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"message": msg.PostBindErr})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": errmsg.PostBindErr})
 		return
 	}
 
@@ -35,7 +35,7 @@ func getPostByID(ctx *gin.Context) {
 	}
 
 	if post.ID == "" {
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": msg.NoDataErr})
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": errmsg.NoDataErr})
 		return
 	}
 
@@ -56,7 +56,7 @@ func getPosts(ctx *gin.Context) {
 	}
 
 	if len(posts) == 0 {
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": msg.NoDataErr})
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": errmsg.NoDataErr})
 		return
 	}
 

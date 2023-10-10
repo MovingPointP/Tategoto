@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"tategoto/config/msg"
+	"tategoto/config/msg/errmsg"
 	"tategoto/pkg/funk"
 	"testing"
 	"time"
@@ -46,7 +46,7 @@ func duplicateSignUp_400(t *testing.T, r *gin.Engine) {
 	message := data.Message
 
 	assert.Equal(t, 400, w.Code)
-	assert.Equal(t, msg.DuplicateMailErr, message)
+	assert.Equal(t, errmsg.DuplicateMailErr, message)
 }
 
 // 正常なサインアップ
@@ -91,7 +91,7 @@ func noMailLogin_400(t *testing.T, r *gin.Engine) {
 	message := data.Message
 
 	assert.Equal(t, 400, w.Code)
-	assert.Equal(t, msg.IncorrectMailOrPasswordErr, message)
+	assert.Equal(t, errmsg.IncorrectMailOrPasswordErr, message)
 }
 
 // パスワード不一致ログイン
@@ -110,5 +110,5 @@ func discordancePasswordLogin_400(t *testing.T, r *gin.Engine) {
 	message := data.Message
 
 	assert.Equal(t, 400, w.Code)
-	assert.Equal(t, msg.IncorrectMailOrPasswordErr, message)
+	assert.Equal(t, errmsg.IncorrectMailOrPasswordErr, message)
 }

@@ -1,4 +1,4 @@
-package msg
+package errmsg
 
 var (
 	DuplicateMailErr           = "既に同じメールアドレスが使われています。"

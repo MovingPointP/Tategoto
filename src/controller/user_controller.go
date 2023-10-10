@@ -2,7 +2,7 @@ package controller
 
 import (
 	"net/http"
-	"tategoto/config/msg"
+	"tategoto/config/msg/errmsg"
 	"tategoto/model"
 	"tategoto/pkg/filter"
 	"tategoto/pkg/funk"
@@ -21,7 +21,7 @@ func getUserByID(ctx *gin.Context) {
 	}
 
 	if user.ID == "" {
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": msg.NoDataErr})
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": errmsg.NoDataErr})
 		return
 	}
 
@@ -40,7 +40,7 @@ func getUsers(ctx *gin.Context) {
 	}
 
 	if len(users) == 0 {
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": msg.NoDataErr})
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": errmsg.NoDataErr})
 		return
 	}
 

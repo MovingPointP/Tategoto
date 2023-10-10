@@ -20,5 +20,5 @@ func main() {
 	//GinのEngine取得
 	router := controller.GetRouter(db)
 	//server起動
-	router.Run(config.Config.PORT)
+	router.Run(config.ServConf.PORT)
 }

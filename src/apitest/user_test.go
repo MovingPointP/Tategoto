@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"tategoto/config/msg"
+	"tategoto/config/msg/errmsg"
 	"testing"
 
 	"github.com/gin-gonic/gin"
@@ -41,7 +41,7 @@ func beforeLoginGetUserByID_303(t *testing.T, r *gin.Engine) {
 	message := data.Message
 
 	assert.Equal(t, 303, w.Code)
-	assert.Equal(t, msg.ShouldLoginErr, message)
+	assert.Equal(t, errmsg.ShouldLoginErr, message)
 }
 
 // IDによる存在しないユーザーの取得
@@ -60,7 +60,7 @@ func getNoUserByID_400(t *testing.T, r *gin.Engine) {
 	message := data.Message
 
 	assert.Equal(t, 400, w.Code)
-	assert.Equal(t, msg.NoDataErr, message)
+	assert.Equal(t, errmsg.NoDataErr, message)
 }
 
 // 正常なIDによるユーザーの取得
@@ -100,7 +100,7 @@ func beforeLoginGetUsersWithQuery_303(t *testing.T, r *gin.Engine) {
 	message := data.Message
 
 	assert.Equal(t, 303, w.Code)
-	assert.Equal(t, msg.ShouldLoginErr, message)
+	assert.Equal(t, errmsg.ShouldLoginErr, message)
 }
 
 // クエリによる存在しないユーザーの取得
@@ -119,7 +119,7 @@ func getNoUsersWithQuery_400(t *testing.T, r *gin.Engine) {
 	message := data.Message
 
 	assert.Equal(t, 400, w.Code)
-	assert.Equal(t, msg.NoDataErr, message)
+	assert.Equal(t, errmsg.NoDataErr, message)
 }
 
 // 正常なクエリによるユーザーの取得

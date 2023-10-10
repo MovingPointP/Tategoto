@@ -3,7 +3,7 @@ package controller
 import (
 	"net/http"
 	"tategoto/config"
-	"tategoto/config/msg"
+	"tategoto/config/msg/errmsg"
 	"tategoto/model"
 	"tategoto/pkg/filter"
 	"tategoto/pkg/ulid"
@@ -20,7 +20,7 @@ func tokenRequired() gin.HandlerFunc {
 
 		//tokenが存在しない場合
 		if err != nil {
-			ctx.JSON(http.StatusSeeOther, gin.H{"message": msg.ShouldLoginErr, "path": ctx.Request.URL.Path})
+			ctx.JSON(http.StatusSeeOther, gin.H{"message": errmsg.ShouldLoginErr, "path": ctx.Request.URL.Path})
 			ctx.Abort()
 			return
 		}
@@ -28,7 +28,7 @@ func tokenRequired() gin.HandlerFunc {
 		//Userの復元
 		user, err := serviceInstance.RestoreUser(ctx, token)
 		if err != nil {
-			ctx.JSON(http.StatusSeeOther, gin.H{"message": msg.ShouldLoginErr, "path": ctx.Request.URL.Path})
+			ctx.JSON(http.StatusSeeOther, gin.H{"message": errmsg.ShouldLoginErr, "path": ctx.Request.URL.Path})
 			ctx.Abort()
 			return
 		}
@@ -44,7 +44,7 @@ func compareTokenAndPost() gin.HandlerFunc {
 		authUser, _ := ctx.Get("AuthorizedUser")
 		authorizedUser, ok := authUser.(*model.User)
 		if !ok {
-			ctx.JSON(http.StatusSeeOther, gin.H{"message": msg.ShouldLoginErr, "path": ctx.Request.URL.Path})
+			ctx.JSON(http.StatusSeeOther, gin.H{"message": errmsg.ShouldLoginErr, "path": ctx.Request.URL.Path})
 			ctx.Abort()
 			return
 		}
@@ -52,21 +52,21 @@ func compareTokenAndPost() gin.HandlerFunc {
 		var post model.Post
 		//postにバインド
 		if err := ctx.ShouldBindJSON(&post); err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{"message": msg.PostBindErr})
+			ctx.JSON(http.StatusBadRequest, gin.H{"message": errmsg.PostBindErr})
 			ctx.Abort()
 			return
 		}
 
 		id, err := ulid.CreateULID()
 		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"message": msg.GenerateIDErr})
+			ctx.JSON(http.StatusInternalServerError, gin.H{"message": errmsg.GenerateIDErr})
 			ctx.Abort()
 			return
 		}
 		post.ID = id
 
 		if authorizedUser.ID != post.UserID {
-			ctx.JSON(http.StatusBadRequest, gin.H{"message": msg.IncorrectUserIDErr, "path": ctx.Request.URL.Path})
+			ctx.JSON(http.StatusBadRequest, gin.H{"message": errmsg.IncorrectUserIDErr, "path": ctx.Request.URL.Path})
 			ctx.Abort()
 			return
 		}
@@ -86,7 +86,7 @@ func signup(ctx *gin.Context) {
 
 	id, err := ulid.CreateULID()
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"message": msg.GenerateIDErr})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": errmsg.GenerateIDErr})
 		ctx.Abort()
 		return
 	}
@@ -110,7 +110,7 @@ func login(ctx *gin.Context) {
 
 	id, err := ulid.CreateULID()
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"message": msg.GenerateIDErr})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": errmsg.GenerateIDErr})
 		ctx.Abort()
 		return
 	}
@@ -123,7 +123,7 @@ func login(ctx *gin.Context) {
 	}
 
 	//cookieにセット
-	ctx.SetCookie("token", token, config.Config.ACCESS_TOKEN_HOUR*3600, "/", "localhost", false, true)
+	ctx.SetCookie("token", token, config.ServConf.ACCESS_TOKEN_HOUR*3600, "/", "localhost", false, true)
 
 	ctx.JSON(http.StatusOK, gin.H{"user": filter.PersonalUser(spUser)})
 }

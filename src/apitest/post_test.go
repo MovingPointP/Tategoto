@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"tategoto/config/msg"
+	"tategoto/config/msg/errmsg"
 	"tategoto/pkg/funk"
 	"testing"
 	"time"
@@ -51,7 +51,7 @@ func beforeLoginPost_303(t *testing.T, r *gin.Engine) {
 	message := data.Message
 
 	assert.Equal(t, 303, w.Code)
-	assert.Equal(t, msg.ShouldLoginErr, message)
+	assert.Equal(t, errmsg.ShouldLoginErr, message)
 }
 
 // tokenとは異なるuserIDでのポストの投稿
@@ -74,7 +74,7 @@ func differentUserIDPost_400(t *testing.T, r *gin.Engine) {
 	message := data.Message
 
 	assert.Equal(t, 400, w.Code)
-	assert.Equal(t, msg.IncorrectUserIDErr, message)
+	assert.Equal(t, errmsg.IncorrectUserIDErr, message)
 }
 
 // 正常なポストの投稿
@@ -118,7 +118,7 @@ func beforeLoginGetPostByID_303(t *testing.T, r *gin.Engine) {
 	message := data.Message
 
 	assert.Equal(t, 303, w.Code)
-	assert.Equal(t, msg.ShouldLoginErr, message)
+	assert.Equal(t, errmsg.ShouldLoginErr, message)
 }
 
 // IDによる存在しないポストの取得
@@ -137,7 +137,7 @@ func getNoPostByID_400(t *testing.T, r *gin.Engine) {
 	message := data.Message
 
 	assert.Equal(t, 400, w.Code)
-	assert.Equal(t, msg.NoDataErr, message)
+	assert.Equal(t, errmsg.NoDataErr, message)
 }
 
 // 正常なIDによるポストの取得
@@ -176,7 +176,7 @@ func beforeLoginGetPostsWithQuery_303(t *testing.T, r *gin.Engine) {
 	message := data.Message
 
 	assert.Equal(t, 303, w.Code)
-	assert.Equal(t, msg.ShouldLoginErr, message)
+	assert.Equal(t, errmsg.ShouldLoginErr, message)
 }
 
 // クエリによる存在しないポストの取得
@@ -195,7 +195,7 @@ func getNoPostsWithQuery_400(t *testing.T, r *gin.Engine) {
 	message := data.Message
 
 	assert.Equal(t, 400, w.Code)
-	assert.Equal(t, msg.NoDataErr, message)
+	assert.Equal(t, errmsg.NoDataErr, message)
 }
 
 // 正常なクエリによるポストの取得

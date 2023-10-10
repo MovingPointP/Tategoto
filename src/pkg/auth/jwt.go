@@ -3,7 +3,7 @@ package auth
 import (
 	"errors"
 	"tategoto/config"
-	"tategoto/config/msg"
+	"tategoto/config/msg/errmsg"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -13,14 +13,14 @@ func CreateUserJWT(userID string) (string, error) {
 	//ペイロード
 	claims := jwt.MapClaims{
 		"user_id": userID,
-		"exp":     time.Now().Add(time.Hour * time.Duration(config.Config.ACCESS_TOKEN_HOUR)).Unix(), //トークン期限
+		"exp":     time.Now().Add(time.Hour * time.Duration(config.ServConf.ACCESS_TOKEN_HOUR)).Unix(), //トークン期限
 	}
 
 	//token生成
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	//tokenに署名を付与
-	tokenString, err := token.SignedString([]byte(config.Config.SECRET_KEY))
+	tokenString, err := token.SignedString([]byte(config.ServConf.SECRET_KEY))
 	if err != nil {
 		return "", err
 	}
@@ -33,23 +33,23 @@ func VerifyUserJWT(tokenString string) (string, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("")
 		}
-		return []byte(config.Config.SECRET_KEY), nil
+		return []byte(config.ServConf.SECRET_KEY), nil
 	})
 
 	if err != nil {
-		return "", errors.New(msg.VerifyTokenErr)
+		return "", errors.New(errmsg.VerifyTokenErr)
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 
 	//token検証エラー
 	if !ok || !token.Valid {
-		return "", errors.New(msg.VerifyTokenErr)
+		return "", errors.New(errmsg.VerifyTokenErr)
 	}
 
 	//token期限切れ
 	if int64(claims["exp"].(float64)) < time.Now().Unix() {
-		return "", errors.New(msg.ExpiredTokenErr)
+		return "", errors.New(errmsg.ExpiredTokenErr)
 	}
 
 	id := claims["user_id"].(string)
