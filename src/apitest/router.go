@@ -16,6 +16,7 @@ var serviceInstance service.Services
 func NewRouter() *gin.Engine {
 	//.envの読み込み
 	config.InitTestConfig()
+	config.InitSmtpConfig()
 
 	//DBに接続
 	db := connect.GetConnection()

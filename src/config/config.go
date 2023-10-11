@@ -17,10 +17,10 @@ func InitAppConfig() {
 	}
 	access_token_hour, _ := strconv.Atoi(os.Getenv("ACCESS_TOKEN_HOUR"))
 	ServConf = &model.ServerConfig{
-		DSN:               os.Getenv("DSN"),
-		PORT:              os.Getenv("SERVER_PORT"),
-		ACCESS_TOKEN_HOUR: access_token_hour,
-		SECRET_KEY:        os.Getenv("SECRET_KEY"),
+		Dsn:             os.Getenv("DSN"),
+		Port:            os.Getenv("SERVER_PORT"),
+		AccessTokenHour: access_token_hour,
+		SecretKey:       os.Getenv("SECRET_KEY"),
 	}
 }
 
@@ -30,18 +30,18 @@ func InitTestConfig() {
 	}
 	access_token_hour, _ := strconv.Atoi(os.Getenv("ACCESS_TOKEN_HOUR"))
 	ServConf = &model.ServerConfig{
-		DSN:               os.Getenv("DSN"),
-		PORT:              os.Getenv("SERVER_PORT"),
-		ACCESS_TOKEN_HOUR: access_token_hour,
-		SECRET_KEY:        os.Getenv("SECRET_KEY"),
+		Dsn:             os.Getenv("DSN"),
+		Port:            os.Getenv("SERVER_PORT"),
+		AccessTokenHour: access_token_hour,
+		SecretKey:       os.Getenv("SECRET_KEY"),
 	}
 }
 
 func InitSmtpConfig() {
 	SmtpConf = &model.SmtpConfig{
-		SMTP_SERVER:   os.Getenv("SMTP_SERVER"),
-		SMTP_PORT:     os.Getenv("SMTP_PORT"),
-		AUTH_ADDRESS:  os.Getenv("AUTH_ADDRESS"),
-		AUTH_PASSWORD: os.Getenv("AUTH_PASSWORD"),
+		SmtpServer:   os.Getenv("SMTP_SERVER"),
+		SmtpPort:     os.Getenv("SMTP_PORT"),
+		AuthAddress:  os.Getenv("AUTH_ADDRESS"),
+		AuthPassword: os.Getenv("AUTH_PASSWORD"),
 	}
 }

@@ -1,15 +1,15 @@
 package model
 
 type ServerConfig struct {
-	DSN               string
-	PORT              string
-	ACCESS_TOKEN_HOUR int
-	SECRET_KEY        string
+	Dsn             string
+	Port            string
+	AccessTokenHour int
+	SecretKey       string
 }
 
 type SmtpConfig struct {
-	SMTP_SERVER   string
-	SMTP_PORT     string
-	AUTH_ADDRESS  string
-	AUTH_PASSWORD string
+	SmtpServer   string
+	SmtpPort     string
+	AuthAddress  string
+	AuthPassword string
 }

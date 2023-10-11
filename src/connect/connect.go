@@ -9,7 +9,7 @@ import (
 
 // open
 func GetConnection() *gorm.DB {
-	dsn := config.ServConf.DSN
+	dsn := config.ServConf.Dsn
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err)

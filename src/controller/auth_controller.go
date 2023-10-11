@@ -123,7 +123,7 @@ func login(ctx *gin.Context) {
 	}
 
 	//cookieにセット
-	ctx.SetCookie("token", token, config.ServConf.ACCESS_TOKEN_HOUR*3600, "/", "localhost", false, true)
+	ctx.SetCookie("token", token, config.ServConf.AccessTokenHour*3600, "/", "localhost", false, true)
 
 	ctx.JSON(http.StatusOK, gin.H{"user": filter.PersonalUser(spUser)})
 }

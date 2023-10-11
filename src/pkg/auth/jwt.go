@@ -13,14 +13,14 @@ func CreateUserJWT(userID string) (string, error) {
 	//ペイロード
 	claims := jwt.MapClaims{
 		"user_id": userID,
-		"exp":     time.Now().Add(time.Hour * time.Duration(config.ServConf.ACCESS_TOKEN_HOUR)).Unix(), //トークン期限
+		"exp":     time.Now().Add(time.Hour * time.Duration(config.ServConf.AccessTokenHour)).Unix(), //トークン期限
 	}
 
 	//token生成
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	//tokenに署名を付与
-	tokenString, err := token.SignedString([]byte(config.ServConf.SECRET_KEY))
+	tokenString, err := token.SignedString([]byte(config.ServConf.SecretKey))
 	if err != nil {
 		return "", err
 	}
@@ -33,7 +33,7 @@ func VerifyUserJWT(tokenString string) (string, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("")
 		}
-		return []byte(config.ServConf.SECRET_KEY), nil
+		return []byte(config.ServConf.SecretKey), nil
 	})
 
 	if err != nil {

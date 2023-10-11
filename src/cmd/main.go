@@ -10,6 +10,7 @@ import (
 func main() {
 	//.envの読み込み
 	config.InitAppConfig()
+	config.InitSmtpConfig()
 
 	//DBに接続
 	db := connect.GetConnection()
@@ -20,5 +21,5 @@ func main() {
 	//GinのEngine取得
 	router := controller.GetRouter(db)
 	//server起動
-	router.Run(config.ServConf.PORT)
+	router.Run(config.ServConf.Port)
 }
