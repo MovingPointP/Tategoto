@@ -4,17 +4,12 @@ import (
 	"os"
 	"strconv"
 	"tategoto/model"
-
-	"github.com/joho/godotenv"
 )
 
 var ServConf *model.ServerConfig
 var SmtpConf *model.SmtpConfig
 
 func InitAppConfig() {
-	if err := godotenv.Load("../.env.local"); err != nil {
-		panic(err)
-	}
 	access_token_hour, _ := strconv.Atoi(os.Getenv("ACCESS_TOKEN_HOUR"))
 	ServConf = &model.ServerConfig{
 		Dsn:             os.Getenv("DSN"),
@@ -25,9 +20,6 @@ func InitAppConfig() {
 }
 
 func InitTestConfig() {
-	if err := godotenv.Load("../../.env.test"); err != nil {
-		panic(err)
-	}
 	access_token_hour, _ := strconv.Atoi(os.Getenv("ACCESS_TOKEN_HOUR"))
 	ServConf = &model.ServerConfig{
 		Dsn:             os.Getenv("DSN"),
