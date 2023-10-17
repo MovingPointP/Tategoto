@@ -1,0 +1,320 @@
+openapi: "3.0.1"
+info: 
+  title: "tategoto"
+  version: "1.0.0"
+paths: 
+  "/api/signup":
+    "post":
+      summary: "サインアップAPI"
+      requestBody:
+        description: "ユーザー情報"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mail:
+                  type: string
+                password:
+                  type: string
+                name:
+                  type: string
+              example:
+                mail: "hoge@mail.com"
+                password: "hogehoge"
+                name: "hogeman"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  User:
+                    type: 
+                      object
+                    properties:
+                      ID:
+                        type: string
+                        example: "12345678901234567890123456"
+                      CreatedAt:
+                        type: string
+                        format: date-time
+                      UpdatedAt:
+                        type: string
+                        format: date-time
+                      DeletedAt:
+                        type: string
+                        example: ""
+                      mail:
+                        type:  string
+                      password:
+                        type: string
+                        example: ""
+                      name:
+                        type: string
+  "/api/login":
+    "post":
+      summary: "ログインAPI"
+      requestBody:
+        description: "ユーザー情報"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mail:
+                  type: string
+                password:
+                  type: string
+              example:
+                mail: "hoge@mail.com"
+                password: "hogehoge"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  User:
+                    type: 
+                      object
+                    properties:
+                      ID:
+                        type: string
+                        example: "12345678901234567890123456"
+                      CreatedAt:
+                        type: string
+                        format: date-time
+                      UpdatedAt:
+                        type: string
+                        format: date-time
+                      DeletedAt:
+                        type: string
+                        example: ""
+                      mail:
+                        type:  string
+                        example: "hoge@mail.com"
+                      password:
+                        type: string
+                        example: ""
+                      name:
+                        type: string
+                        example: "hogeman"
+  "/api/users":
+    "get":
+      summary: "ユーザー取得API"
+      parameters:
+        - name: name
+          in: query
+          description: " 取得したいユーザーの名前"
+          required: false
+          schema: 
+            type: string
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Users:
+                      type: array
+                      items: 
+                        type: object
+                        properties:
+                          ID:
+                            type: string
+                            example: "12345678901234567890123456"
+                          CreatedAt:
+                            type: string
+                            format: date-time
+                          UpdatedAt:
+                            type: string
+                            format: date-time
+                          DeletedAt:
+                            type: string
+                            example: ""
+                          mail:
+                            type:  string
+                            example: ""
+                          password:
+                            type: string
+                            example: ""
+                          name:
+                            type: string
+                            example: "hogeman"
+  "/api/users/{:id}":
+    "get":
+      summary: "ユーザー取得API"
+      parameters:
+        - name: userID
+          in: path
+          description: 取得したいユーザーのID
+          required: true
+          schema: 
+            type: string
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  User:
+                    type: 
+                      object
+                    properties:
+                      ID:
+                        type: string
+                        example: "12345678901234567890123456"
+                      CreatedAt:
+                        type: string
+                        format: date-time
+                      UpdatedAt:
+                        type: string
+                        format: date-time
+                      DeletedAt:
+                        type: string
+                        example: ""
+                      mail:
+                        type:  string
+                        example: ""
+                      password:
+                        type: string
+                        example: ""
+                      name:
+                        type: string
+                        example: "hogeman"
+  "/api/posts":
+    "post":
+      summary: "投稿用API"
+      requestBody:
+        description: "ポスト情報"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  example: "hello"
+                user_id:
+                  type: string
+                  example: "12345678901234567890123456"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Post:
+                    type: 
+                      object
+                    properties:
+                      ID:
+                        type: string
+                        example: "01234567890123456789012345"
+                      CreatedAt:
+                        type: string
+                        format: date-time
+                      UpdatedAt:
+                        type: string
+                        format: date-time
+                      DeletedAt:
+                        type: string
+                        example: ""
+                      content:
+                        type: string
+                        example: "hello"
+                      user_id:
+                        type: string
+                        example: "12345678901234567890123456"
+    "get":
+      summary: "ポスト取得API"
+      parameters:
+        - name: uid
+          in: query
+          description: " 取得したいポストのユーザーID"
+          required: false
+          schema: 
+            type: string
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  posts:
+                      type: array
+                      items: 
+                        type: object
+                        properties:
+                          ID:
+                            type: string
+                            example: "01234567890123456789012345"
+                          CreatedAt:
+                            type: string
+                            format: date-time
+                          UpdatedAt:
+                            type: string
+                            format: date-time
+                          DeletedAt:
+                            type: string
+                            example: ""
+                          content:
+                            type: string
+                            example: "hello"
+                          user_id:
+                            type: string
+                            example: "12345678901234567890123456"
+  "/api/posts/{:id}":
+    "get":
+      summary: "ポスト取得API"
+      parameters:
+        - name: postID
+          in: path
+          description: 取得したいポストのID
+          required: true
+          schema: 
+            type: string
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Post:
+                    type: 
+                      object
+                    properties:
+                      ID:
+                        type: string
+                        example: "01234567890123456789012345"
+                      CreatedAt:
+                        type: string
+                        format: date-time
+                      UpdatedAt:
+                        type: string
+                        format: date-time
+                      DeletedAt:
+                        type: string
+                        example: ""
+                      content:
+                        type: string
+                        example: "hello"
+                      user_id:
+                        type: string
+                        example: "12345678901234567890123456"
+    
