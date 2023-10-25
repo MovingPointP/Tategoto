@@ -83,14 +83,6 @@ func signup(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
-
-	id, err := ulid.CreateULID()
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"message": errmsg.GenerateIDErr})
-		return
-	}
-	user.ID = id
-
 	spUser, err := serviceInstance.SignUp(ctx, &user)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})

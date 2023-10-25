@@ -6,6 +6,7 @@ import (
 	"tategoto/config/msg/errmsg"
 	"tategoto/model"
 	"tategoto/pkg/auth"
+	"tategoto/pkg/ulid"
 )
 
 func (us *userService) RestoreUser(ctx context.Context, token string) (*model.User, error) {
@@ -24,6 +25,12 @@ func (us *userService) RestoreUser(ctx context.Context, token string) (*model.Us
 }
 
 func (us *userService) SignUp(ctx context.Context, user *model.User) (*model.User, error) {
+	//IDの生成
+	id, err := ulid.CreateULID()
+	if err != nil {
+		return nil, errors.New(errmsg.GenerateIDErr)
+	}
+	user.ID = id
 	//メールアドレス重複チェック
 	spUser, err := us.ur.GetUserByMail(ctx, user.Mail)
 	if err != nil {

@@ -23,28 +23,24 @@ func createTestSample() {
 func createUserSample(ctx context.Context) (*model.User, *model.User, string, string) {
 	name := "sample"
 	//UserHoge
-	id, _ := ulid.CreateULID()
 	password, _ := auth.EncryptPassword("hoge")
 	user := &model.User{
-		ID:       id,
 		Mail:     "hoge@mail.com",
 		Password: password,
 		Name:     name,
 	}
 	userHoge, _ := serviceInstance.SignUp(ctx, user)
-	tokenHoge, _ := auth.CreateUserJWT(id)
+	tokenHoge, _ := auth.CreateUserJWT(userHoge.ID)
 
 	//UserFuga
-	id, _ = ulid.CreateULID()
 	password, _ = auth.EncryptPassword("fuga")
 	user = &model.User{
-		ID:       id,
 		Mail:     "fuga@mail.com",
 		Password: password,
 		Name:     name,
 	}
 	userFuga, _ := serviceInstance.SignUp(ctx, user)
-	tokenFuga, _ := auth.CreateUserJWT(id)
+	tokenFuga, _ := auth.CreateUserJWT(userFuga.ID)
 	return userHoge, userFuga, tokenHoge, tokenFuga
 }
 
