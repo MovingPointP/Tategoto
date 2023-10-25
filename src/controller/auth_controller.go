@@ -87,7 +87,6 @@ func signup(ctx *gin.Context) {
 	id, err := ulid.CreateULID()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": errmsg.GenerateIDErr})
-		ctx.Abort()
 		return
 	}
 	user.ID = id
@@ -111,7 +110,6 @@ func login(ctx *gin.Context) {
 	id, err := ulid.CreateULID()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": errmsg.GenerateIDErr})
-		ctx.Abort()
 		return
 	}
 	user.ID = id
